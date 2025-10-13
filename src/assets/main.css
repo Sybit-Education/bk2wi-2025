@@ -4,28 +4,37 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+@layer components {
   #app {
-    @apply max-w-[1280px] mx-auto p-8 font-normal;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-weight: normal;
   }
 
   a, .green {
-    @apply no-underline text-[hsl(160,100%,37%)] transition-all duration-400 p-[3px];
+    text-decoration: none;
+    color: hsla(160, 100%, 37%, 1);
+    transition: 0.4s;
+    padding: 3px;
   }
 
   @media (hover: hover) {
     a:hover {
-      @apply bg-[hsla(160,100%,37%,0.2)];
+      background-color: hsla(160, 100%, 37%, 0.2);
     }
   }
 
   @media (min-width: 1024px) {
     body {
-      @apply flex items-center;
+      display: flex;
+      place-items: center;
     }
 
     #app {
-      @apply grid grid-cols-2 px-8 py-0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 2rem;
     }
   }
 }
