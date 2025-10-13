@@ -2,6 +2,7 @@
   "name": "bk2wi-2025",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
