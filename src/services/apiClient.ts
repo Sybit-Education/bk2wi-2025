@@ -69,6 +69,20 @@ export class ApiClient {
   }
 
   /**
+   * PATCH-Anfrage an die API
+   */
+  async patch<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    try {
+      const response = await this.client.patch<{ data?: T }>(url, data, config)
+      // NocoDB v2 API gibt Daten in einem 'data' Objekt zurück
+      return (response.data.data || response.data) as T
+    } catch (error) {
+      this.handleError(error)
+      throw error
+    }
+  }
+
+  /**
    * DELETE-Anfrage an die API
    */
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
