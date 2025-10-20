@@ -23,12 +23,8 @@ async function loadTrees() {
     // Berechne Offset für Paginierung
     const offset = (currentPage.value - 1) * pageSize.value
     
-    // Lade Bäume mit Paginierung
-    const response = await treeInfoService.nocoDBService.getRecords<TreeInfo>('treeInfo', {
-      limit: pageSize.value,
-      offset,
-      sort: 'name'
-    })
+    // Lade Bäume mit Paginierung über den TreeInfoService
+    const response = await treeInfoService.getAllTrees(pageSize.value, offset)
     
     trees.value = response.list
     totalTrees.value = response.pageInfo.totalRows
