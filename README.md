@@ -23,11 +23,17 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 
 See [Vite Configuration Reference](https://vite.dev/config/).
 
-## Project Setup
+## Project Setup for development
+
+### Install node dependencies
 
 ```sh
 npm install
 ```
+
+### Configure your enviroment
+
+Copy the `.env.local.example` to `.env.local` and fill it with your NocoDB URL and API key
 
 ### Compile and Hot-Reload for Development
 
@@ -35,11 +41,15 @@ npm install
 npm run dev
 ```
 
+## For production
+
 ### Type-Check, Compile and Minify for Production
 
 ```sh
 npm run build
 ```
+
+## Helpful commands
 
 ### Lint with [ESLint](https://eslint.org/)
 
