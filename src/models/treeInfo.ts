@@ -16,5 +16,3 @@ export interface TreeInfo {
   description?: string
   [key: string]: unknown
 }
-
-export default TreeInfo
