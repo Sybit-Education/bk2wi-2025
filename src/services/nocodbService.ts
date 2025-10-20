@@ -4,6 +4,39 @@ import { ApiClient } from '../api/apiClient'
 let instance: NocoDBService | null = null
 
 /**
+ * Hilfsfunktion zum Umwandeln des ersten Buchstabens eines Strings in Großbuchstaben
+ * @param str Der zu konvertierende String
+ * @returns String mit großem Anfangsbuchstaben
+ */
+function capitalizeFirstLetter(str: string): string {
+  if (!str || typeof str !== 'string' || str.length === 0) return str
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+/**
+ * Konvertiert alle Schlüssel eines Objekts, sodass der erste Buchstabe groß ist
+ * @param obj Das zu konvertierende Objekt
+ * @returns Ein neues Objekt mit konvertierten Schlüsseln
+ */
+function capitalizeObjectKeys<T extends Record<string, unknown>>(obj: T): Record<string, unknown> {
+  if (!obj || typeof obj !== 'object' || obj === null) return obj
+  
+  return Object.entries(obj).reduce((result, [key, value]) => {
+    // Arrays und verschachtelte Objekte rekursiv verarbeiten
+    if (Array.isArray(value)) {
+      result[capitalizeFirstLetter(key)] = value.map(item => 
+        typeof item === 'object' && item !== null ? capitalizeObjectKeys(item as Record<string, unknown>) : item
+      )
+    } else if (typeof value === 'object' && value !== null) {
+      result[capitalizeFirstLetter(key)] = capitalizeObjectKeys(value as Record<string, unknown>)
+    } else {
+      result[capitalizeFirstLetter(key)] = value
+    }
+    return result
+  }, {} as Record<string, unknown>)
+}
+
+/**
  * Optionen für Abfragen an die NocoDB-API
  */
 export interface QueryOptions {
@@ -99,9 +132,40 @@ export class NocoDBService {
     let url = `/api/v2/tables/${tableId}/records`
     const queryParams: string[] = []
 
-    if (options.fields) queryParams.push(`fields=${options.fields}`)
-    if (options.sort) queryParams.push(`sort=${options.sort}`)
-    if (options.where) queryParams.push(`where=${options.where}`)
+    // Konvertiere Feldnamen in den Optionen
+    if (options.fields) {
+      const capitalizedFields = options.fields.split(',')
+        .map(field => capitalizeFirstLetter(field.trim()))
+        .join(',')
+      queryParams.push(`fields=${capitalizedFields}`)
+    }
+    
+    if (options.sort) {
+      const capitalizedSort = options.sort.split(',')
+        .map(sortField => {
+          if (sortField.startsWith('-')) {
+            return `-${capitalizeFirstLetter(sortField.substring(1).trim())}`
+          }
+          return capitalizeFirstLetter(sortField.trim())
+        })
+        .join(',')
+      queryParams.push(`sort=${capitalizedSort}`)
+    }
+    
+    if (options.where) {
+      // Ersetze Feldnamen in where-Bedingungen
+      // Format: (field,operator,value)~and(field2,operator2,value2)
+      let whereClause = options.where
+      
+      // Regex zum Finden von Feldnamen in where-Bedingungen
+      const fieldRegex = /\(([a-zA-Z0-9_]+),/g
+      whereClause = whereClause.replace(fieldRegex, (match, fieldName) => {
+        return `(${capitalizeFirstLetter(fieldName)},`
+      })
+      
+      queryParams.push(`where=${whereClause}`)
+    }
+    
     if (options.offset !== undefined) queryParams.push(`offset=${options.offset}`)
     if (options.limit !== undefined) queryParams.push(`limit=${options.limit}`)
     if (options.viewId) queryParams.push(`viewId=${options.viewId}`)
@@ -131,7 +195,10 @@ export class NocoDBService {
 
     let url = `/api/v2/tables/${tableId}/records/${recordId}`
     if (fields) {
-      url += `?fields=${fields}`
+      const capitalizedFields = fields.split(',')
+        .map(field => capitalizeFirstLetter(field.trim()))
+        .join(',')
+      url += `?fields=${capitalizedFields}`
     }
 
     try {
@@ -155,9 +222,14 @@ export class NocoDBService {
 
     // Stelle sicher, dass die Daten als Array vorliegen
     const dataArray = Array.isArray(data) ? data : [data]
+    
+    // Konvertiere alle Schlüssel, sodass der erste Buchstabe groß ist
+    const capitalizedDataArray = dataArray.map(item => 
+      capitalizeObjectKeys(item as Record<string, unknown>)
+    )
 
     try {
-      const response = await this.apiClient.post<R[]>(url, dataArray)
+      const response = await this.apiClient.post<R[]>(url, capitalizedDataArray)
       return response
     } catch (error) {
       console.error(`Fehler beim Erstellen von Datensätzen in ${tableName}:`, error)
@@ -177,9 +249,14 @@ export class NocoDBService {
 
     // Stelle sicher, dass die Daten als Array vorliegen
     const dataArray = Array.isArray(data) ? data : [data]
+    
+    // Konvertiere alle Schlüssel, sodass der erste Buchstabe groß ist
+    const capitalizedDataArray = dataArray.map(item => 
+      capitalizeObjectKeys(item as Record<string, unknown>)
+    )
 
     try {
-      const response = await this.apiClient.patch<R[]>(url, dataArray)
+      const response = await this.apiClient.patch<R[]>(url, capitalizedDataArray)
       return response
     } catch (error) {
       console.error(`Fehler beim Aktualisieren von Datensätzen in ${tableName}:`, error)
@@ -240,7 +317,19 @@ export class NocoDBService {
     let url = `/api/v2/tables/${tableId}/records/count`
     const queryParams: string[] = []
 
-    if (options.where) queryParams.push(`where=${options.where}`)
+    if (options.where) {
+      // Ersetze Feldnamen in where-Bedingungen
+      let whereClause = options.where
+      
+      // Regex zum Finden von Feldnamen in where-Bedingungen
+      const fieldRegex = /\(([a-zA-Z0-9_]+),/g
+      whereClause = whereClause.replace(fieldRegex, (match, fieldName) => {
+        return `(${capitalizeFirstLetter(fieldName)},`
+      })
+      
+      queryParams.push(`where=${whereClause}`)
+    }
+    
     if (options.viewId) queryParams.push(`viewId=${options.viewId}`)
 
     if (queryParams.length > 0) {
@@ -275,9 +364,39 @@ export class NocoDBService {
     let url = `/api/v2/tables/${tableId}/links/${linkFieldId}/records/${recordId}`
     const queryParams: string[] = []
 
-    if (options.fields) queryParams.push(`fields=${options.fields}`)
-    if (options.sort) queryParams.push(`sort=${options.sort}`)
-    if (options.where) queryParams.push(`where=${options.where}`)
+    // Konvertiere Feldnamen in den Optionen
+    if (options.fields) {
+      const capitalizedFields = options.fields.split(',')
+        .map(field => capitalizeFirstLetter(field.trim()))
+        .join(',')
+      queryParams.push(`fields=${capitalizedFields}`)
+    }
+    
+    if (options.sort) {
+      const capitalizedSort = options.sort.split(',')
+        .map(sortField => {
+          if (sortField.startsWith('-')) {
+            return `-${capitalizeFirstLetter(sortField.substring(1).trim())}`
+          }
+          return capitalizeFirstLetter(sortField.trim())
+        })
+        .join(',')
+      queryParams.push(`sort=${capitalizedSort}`)
+    }
+    
+    if (options.where) {
+      // Ersetze Feldnamen in where-Bedingungen
+      let whereClause = options.where
+      
+      // Regex zum Finden von Feldnamen in where-Bedingungen
+      const fieldRegex = /\(([a-zA-Z0-9_]+),/g
+      whereClause = whereClause.replace(fieldRegex, (match, fieldName) => {
+        return `(${capitalizeFirstLetter(fieldName)},`
+      })
+      
+      queryParams.push(`where=${whereClause}`)
+    }
+    
     if (options.offset !== undefined) queryParams.push(`offset=${options.offset}`)
     if (options.limit !== undefined) queryParams.push(`limit=${options.limit}`)
 
