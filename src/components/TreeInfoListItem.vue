@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TreeInfo } from '@/services/treeInfoService'
+import type { TreeInfo } from '@/models/treeInfo'
 
 defineProps<{
   tree: TreeInfo

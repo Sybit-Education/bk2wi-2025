@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import type { TreeInfo } from '@/services/treeInfoService'
+import type { TreeInfo } from '@/models/treeInfo'
 import { TreeInfoService } from '@/services/treeInfoService'
 import TreeInfoListItem from './TreeInfoListItem.vue'
 
