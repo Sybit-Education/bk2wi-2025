@@ -1,4 +1,4 @@
-import { ApiClient } from 'apiClient'
+import { ApiClient } from '../api/apiClient'
 
 // Singleton-Instanz für den NocoDBService
 let instance: NocoDBService | null = null
