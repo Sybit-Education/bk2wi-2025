@@ -22,7 +22,7 @@ export interface TreeInfo {
  * Service für den Zugriff auf die TREE_INFO Tabelle
  */
 export class TreeInfoService {
-  private nocoDBService: NocoDBService
+  private readonly nocoDBService: NocoDBService
   private readonly tableName = 'treeInfo'
 
   constructor(nocoDBService?: NocoDBService) {
