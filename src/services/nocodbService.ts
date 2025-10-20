@@ -1,4 +1,4 @@
-import { ApiClient } from '../api/apiClient'
+import { ApiClient } from './apiClient'
 
 /**
  * Hilfsfunktion zum Umwandeln des ersten Buchstabens eines Strings in Großbuchstaben
