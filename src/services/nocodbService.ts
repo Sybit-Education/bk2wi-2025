@@ -1,5 +1,4 @@
-import { ApiClient } from '../api/apiClient'
-import type { Settings, Donation, Stats, DonationResponse } from '../models/types'
+import { ApiClient } from 'apiClient'
 
 // Singleton-Instanz für den NocoDBService
 let instance: NocoDBService | null = null
@@ -47,10 +46,6 @@ export interface ListResponse<T> {
  */
 export class NocoDBService {
   private apiClient: ApiClient
-  private tableIds: Record<string, string> = {
-    settings: import.meta.env.VITE_NOCODB_SETTINGS_TABLE || '',
-    donations: import.meta.env.VITE_NOCODB_DONATIONS_TABLE || ''
-  }
   private tableIds: Record<string, string> = {}
 
   constructor(apiClient?: ApiClient) {
@@ -95,22 +90,22 @@ export class NocoDBService {
    */
   async getRecords<T>(tableName: string, options: QueryOptions = {}): Promise<ListResponse<T>> {
     const tableId = this.getTableId(tableName)
-    
+
     // Erstelle die URL mit Query-Parametern
     let url = `/api/v2/tables/${tableId}/records`
     const queryParams: string[] = []
-    
+
     if (options.fields) queryParams.push(`fields=${options.fields}`)
     if (options.sort) queryParams.push(`sort=${options.sort}`)
     if (options.where) queryParams.push(`where=${options.where}`)
     if (options.offset !== undefined) queryParams.push(`offset=${options.offset}`)
     if (options.limit !== undefined) queryParams.push(`limit=${options.limit}`)
     if (options.viewId) queryParams.push(`viewId=${options.viewId}`)
-    
+
     if (queryParams.length > 0) {
       url += `?${queryParams.join('&')}`
     }
-    
+
     try {
       const response = await this.apiClient.get<ListResponse<T>>(url)
       return response
@@ -129,12 +124,12 @@ export class NocoDBService {
    */
   async getRecord<T>(tableName: string, recordId: string | number, fields?: string): Promise<T> {
     const tableId = this.getTableId(tableName)
-    
+
     let url = `/api/v2/tables/${tableId}/records/${recordId}`
     if (fields) {
       url += `?fields=${fields}`
     }
-    
+
     try {
       const response = await this.apiClient.get<T>(url)
       return response
@@ -153,10 +148,10 @@ export class NocoDBService {
   async createRecords<T, R = any>(tableName: string, data: T | T[]): Promise<R[]> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/records`
-    
+
     // Stelle sicher, dass die Daten als Array vorliegen
     const dataArray = Array.isArray(data) ? data : [data]
-    
+
     try {
       const response = await this.apiClient.post<R[]>(url, dataArray)
       return response
@@ -175,10 +170,10 @@ export class NocoDBService {
   async updateRecords<T, R = any>(tableName: string, data: T | T[]): Promise<R[]> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/records`
-    
+
     // Stelle sicher, dass die Daten als Array vorliegen
     const dataArray = Array.isArray(data) ? data : [data]
-    
+
     try {
       const response = await this.apiClient.patch<R[]>(url, dataArray)
       return response
@@ -197,10 +192,10 @@ export class NocoDBService {
   async deleteRecords<R = any>(tableName: string, recordIds: string | number | Array<{id: string | number}>): Promise<R[]> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/records`
-    
+
     // Formatiere die IDs in das erwartete Format
     let dataArray: Array<{id: string | number}>;
-    
+
     if (Array.isArray(recordIds)) {
       // Prüfe, ob es bereits ein Array von Objekten mit ID ist
       if (typeof recordIds[0] === 'object' && recordIds[0] !== null && 'id' in recordIds[0]) {
@@ -213,7 +208,7 @@ export class NocoDBService {
       // Konvertiere einzelne ID zu Array mit einem Objekt
       dataArray = [{ id: recordIds }]
     }
-    
+
     try {
       const response = await this.apiClient.delete<R[]>(url, { data: dataArray })
       return response
@@ -231,17 +226,17 @@ export class NocoDBService {
    */
   async countRecords(tableName: string, options: Pick<QueryOptions, 'where' | 'viewId'> = {}): Promise<number> {
     const tableId = this.getTableId(tableName)
-    
+
     let url = `/api/v2/tables/${tableId}/records/count`
     const queryParams: string[] = []
-    
+
     if (options.where) queryParams.push(`where=${options.where}`)
     if (options.viewId) queryParams.push(`viewId=${options.viewId}`)
-    
+
     if (queryParams.length > 0) {
       url += `?${queryParams.join('&')}`
     }
-    
+
     try {
       const response = await this.apiClient.get<{count: number}>(url)
       return response.count
@@ -260,26 +255,26 @@ export class NocoDBService {
    * @returns Liste der verknüpften Datensätze
    */
   async getLinkedRecords<T>(
-    tableName: string, 
-    linkFieldId: string, 
-    recordId: string | number, 
+    tableName: string,
+    linkFieldId: string,
+    recordId: string | number,
     options: QueryOptions = {}
   ): Promise<ListResponse<T>> {
     const tableId = this.getTableId(tableName)
-    
+
     let url = `/api/v2/tables/${tableId}/links/${linkFieldId}/records/${recordId}`
     const queryParams: string[] = []
-    
+
     if (options.fields) queryParams.push(`fields=${options.fields}`)
     if (options.sort) queryParams.push(`sort=${options.sort}`)
     if (options.where) queryParams.push(`where=${options.where}`)
     if (options.offset !== undefined) queryParams.push(`offset=${options.offset}`)
     if (options.limit !== undefined) queryParams.push(`limit=${options.limit}`)
-    
+
     if (queryParams.length > 0) {
       url += `?${queryParams.join('&')}`
     }
-    
+
     try {
       const response = await this.apiClient.get<ListResponse<T>>(url)
       return response
@@ -298,14 +293,14 @@ export class NocoDBService {
    * @returns true bei Erfolg
    */
   async linkRecords(
-    tableName: string, 
-    linkFieldId: string, 
-    recordId: string | number, 
+    tableName: string,
+    linkFieldId: string,
+    recordId: string | number,
     linkedRecordIds: Array<{id: string | number}>
   ): Promise<boolean> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/links/${linkFieldId}/records/${recordId}`
-    
+
     try {
       const response = await this.apiClient.post<boolean>(url, linkedRecordIds)
       return response
@@ -324,14 +319,14 @@ export class NocoDBService {
    * @returns true bei Erfolg
    */
   async unlinkRecords(
-    tableName: string, 
-    linkFieldId: string, 
-    recordId: string | number, 
+    tableName: string,
+    linkFieldId: string,
+    recordId: string | number,
     linkedRecordIds: Array<{id: string | number}>
   ): Promise<boolean> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/links/${linkFieldId}/records/${recordId}`
-    
+
     try {
       const response = await this.apiClient.delete<boolean>(url, { data: linkedRecordIds })
       return response
@@ -349,7 +344,7 @@ export class NocoDBService {
   async getSettings(): Promise<Settings> {
     try {
       const response = await this.getRecords<Settings>('settings', { limit: 1 })
-      
+
       if (response.list && response.list.length > 0) {
         // Sicherstellen, dass goal_eur eine Zahl ist
         const result = response.list[0];
@@ -358,7 +353,7 @@ export class NocoDBService {
         }
         return result;
       }
-      
+
       throw new Error('Keine Einstellungen gefunden')
     } catch (error) {
       console.error('Fehler beim Abrufen der Einstellungen:', error)
@@ -372,9 +367,9 @@ export class NocoDBService {
   async getDonations(): Promise<Donation[]> {
     try {
       const response = await this.getRecords<Donation>('donations', { limit: 1000 })
-      
+
       console.log(`Anzahl geladener Spenden: ${response.list ? response.list.length : 0}`)
-      
+
       // Sicherstellen, dass alle Spenden gültige Zahlen für amount_eur haben
       return response.list ? response.list.map(donation => {
         if (typeof donation.amount_eur !== 'number') {
