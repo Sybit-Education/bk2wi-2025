@@ -135,7 +135,7 @@ export class NocoDBService {
       return response
     } catch (error) {
       console.error(`Fehler beim Abrufen des Datensatzes ${recordId} aus ${tableName}:`, error)
-      throw new Error(`Datensatz konnte nicht abgerufen werden: ${error}`)
+      throw new Error(`Datensatz konnte nicht abgerufen werden: ${String(error)}`)
     }
   }
 
@@ -145,7 +145,7 @@ export class NocoDBService {
    * @param data Daten für den neuen Datensatz oder Array von Datensätzen
    * @returns Die erstellten Datensätze mit ihren IDs
    */
-  async createRecords<T, R = any>(tableName: string, data: T | T[]): Promise<R[]> {
+  async createRecords<T, R = unknown>(tableName: string, data: T | T[]): Promise<R[]> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/records`
 
@@ -167,7 +167,7 @@ export class NocoDBService {
    * @param data Daten für die Aktualisierung (muss ID-Feld enthalten)
    * @returns Die aktualisierten Datensätze mit ihren IDs
    */
-  async updateRecords<T, R = any>(tableName: string, data: T | T[]): Promise<R[]> {
+  async updateRecords<T, R = unknown>(tableName: string, data: T | T[]): Promise<R[]> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/records`
 
@@ -189,7 +189,7 @@ export class NocoDBService {
    * @param recordIds ID oder Array von IDs der zu löschenden Datensätze
    * @returns Die gelöschten Datensatz-IDs
    */
-  async deleteRecords<R = any>(tableName: string, recordIds: string | number | Array<{id: string | number}>): Promise<R[]> {
+  async deleteRecords<R = unknown>(tableName: string, recordIds: string | number | Array<{id: string | number}>): Promise<R[]> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/records`
 
@@ -349,7 +349,7 @@ export class NocoDBService {
         // Sicherstellen, dass goal_eur eine Zahl ist
         const result = response.list[0];
         if (typeof result.goal_eur !== 'number') {
-          result.goal_eur = parseFloat(result.goal_eur as any) || 0;
+          result.goal_eur = parseFloat(String(result.goal_eur)) || 0;
         }
         return result;
       }
@@ -373,7 +373,7 @@ export class NocoDBService {
       // Sicherstellen, dass alle Spenden gültige Zahlen für amount_eur haben
       return response.list ? response.list.map(donation => {
         if (typeof donation.amount_eur !== 'number') {
-          donation.amount_eur = parseFloat(donation.amount_eur as any) || 0;
+          donation.amount_eur = parseFloat(String(donation.amount_eur)) || 0;
         }
         return donation;
       }) : [];
@@ -439,7 +439,7 @@ export class NocoDBService {
         // Sicherstellen, dass amount_eur eine Zahl ist
         const amount = typeof donation.amount_eur === 'number'
           ? donation.amount_eur
-          : parseFloat(donation.amount_eur as any) || 0
+          : parseFloat(String(donation.amount_eur)) || 0
         return sum + amount
       }, 0)
 
