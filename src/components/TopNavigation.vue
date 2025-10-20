@@ -12,10 +12,10 @@ function toggleMenu() {
   <nav class="bg-white border-gray-200 dark:bg-gray-900">
     <div class="container mx-auto">
       <div class="max-w-screen-xl flex flex-wrap items-center justify-between p-4">
-        <a href="/" class="flex items-center space-x-3 mr-4">
-          <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
+        <a href="/" class="flex items-center space-x-3 mr-5">
+          <img src="../assets/ai-generated-tree.png" class="h-15" alt="Flowbite Logo" />
           <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-            >Flowbite</span
+            >TreeMates</span
           >
         </a>
         <div class="flex items-center ml-auto md:order-2">
@@ -44,13 +44,14 @@ function toggleMenu() {
             </svg>
           </button>
         </div>
+
         <div
           :class="{ hidden: !isMenuOpen }"
           class="w-full md:flex md:w-auto md:order-1"
           id="navbar-default"
         >
           <ul
-            class="font-medium flex flex-col md:p-0 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0"
+            class="font-medium flex flex-col md:p-0 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-1.5"
           >
             <li>
               <a
