@@ -18,6 +18,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "axios": "^1.11.0",
     "flowbite": "^3.1.2",
     "pinia": "^3.0.3",
     "vue": "^3.5.22",

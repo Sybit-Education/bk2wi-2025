@@ -1,4 +1,4 @@
-import { NocoDBService } from './nocodbService'
+import { NocoDBService, type ListResponse } from './nocodbService'
 
 /**
  * Interface für die Daten in der TREE_INFO Tabelle
@@ -26,7 +26,7 @@ export class TreeInfoService {
   private readonly tableName = 'treeInfo'
 
   constructor(nocoDBService?: NocoDBService) {
-    this.nocoDBService = nocoDBService || NocoDBService.getInstance()
+    this.nocoDBService = nocoDBService || new NocoDBService()
   }
 
   /**
@@ -35,7 +35,7 @@ export class TreeInfoService {
    * @param offset Anzahl der zu überspringenden Einträge (für Paginierung)
    * @returns Liste von Baumeinträgen
    */
-  async getAllTrees(limit?: number, offset?: number) {
+  async getAllTrees(limit?: number, offset?: number): Promise<ListResponse<TreeInfo>> {
     return this.nocoDBService.getRecords<TreeInfo>(this.tableName, { limit, offset })
   }
 
@@ -49,30 +49,6 @@ export class TreeInfoService {
   }
 
   /**
-   * Sucht Bäume anhand verschiedener Kriterien
-   * @param criteria Suchkriterien
-   * @returns Liste von Baumeinträgen, die den Kriterien entsprechen
-   */
-  async searchTrees(criteria: Partial<TreeInfo>) {
-    // Erstelle WHERE-Bedingung aus den Kriterien
-    const conditions = Object.entries(criteria)
-      .filter(([_, value]) => value !== undefined && value !== null && value !== '')
-      .map(([key, value]) => {
-        // Für Textfelder verwenden wir 'like', für andere 'eq'
-        const operator = typeof value === 'string' ? 'like' : 'eq'
-        const searchValue = typeof value === 'string' ? `%${value}%` : value
-        return `(${key},${operator},${searchValue})`
-      })
-
-    if (conditions.length === 0) {
-      return this.getAllTrees()
-    }
-
-    const whereClause = conditions.join('~and')
-    return this.nocoDBService.getRecords<TreeInfo>(this.tableName, { where: whereClause })
-  }
-
-  /**
    * Erstellt einen neuen Baumeintrag
    * @param treeInfo Daten für den neuen Baumeintrag
    * @returns Der erstellte Baumeintrag mit ID
@@ -80,7 +56,7 @@ export class TreeInfoService {
   async createTree(treeInfo: TreeInfo) {
     const [createdTree] = await this.nocoDBService.createRecords<TreeInfo, TreeInfo>(
       this.tableName,
-      treeInfo
+      treeInfo,
     )
     return createdTree
   }
@@ -97,7 +73,7 @@ export class TreeInfoService {
 
     const [updatedTree] = await this.nocoDBService.updateRecords<TreeInfo, TreeInfo>(
       this.tableName,
-      treeInfo
+      treeInfo,
     )
     return updatedTree
   }
@@ -119,61 +95,6 @@ export class TreeInfoService {
   async countTrees() {
     return this.nocoDBService.countRecords(this.tableName)
   }
-
-  /**
-   * Filtert Bäume nach Gesundheitszustand
-   * @param status Gesundheitszustand (z.B. 'healthy', 'sick', 'critical')
-   * @returns Liste von Baumeinträgen mit dem angegebenen Gesundheitszustand
-   */
-  async getTreesByHealthStatus(status: string) {
-    return this.nocoDBService.getRecords<TreeInfo>(this.tableName, {
-      where: `(health_status,eq,${status})`
-    })
-  }
-
-  /**
-   * Filtert Bäume nach Baumart
-   * @param species Baumart
-   * @returns Liste von Baumeinträgen der angegebenen Baumart
-   */
-  async getTreesBySpecies(species: string) {
-    return this.nocoDBService.getRecords<TreeInfo>(this.tableName, {
-      where: `(species,like,%${species}%)`
-    })
-  }
-
-  /**
-   * Filtert Bäume nach Standort
-   * @param location Standort
-   * @returns Liste von Baumeinträgen am angegebenen Standort
-   */
-  async getTreesByLocation(location: string) {
-    return this.nocoDBService.getRecords<TreeInfo>(this.tableName, {
-      where: `(location,like,%${location}%)`
-    })
-  }
-
-  /**
-   * Ruft Bäume ab, die seit einem bestimmten Datum nicht mehr inspiziert wurden
-   * @param date Datum im ISO-Format (YYYY-MM-DD)
-   * @returns Liste von Baumeinträgen, die seit dem angegebenen Datum nicht inspiziert wurden
-   */
-  async getTreesNotInspectedSince(date: string) {
-    return this.nocoDBService.getRecords<TreeInfo>(this.tableName, {
-      where: `(last_inspection,lt,${date})`
-    })
-  }
-}
-
-// Singleton-Instanz für den TreeInfoService
-let instance: TreeInfoService | null = null
-
-// Factory-Methode für Singleton-Zugriff
-export function useTreeInfoService(): TreeInfoService {
-  if (!instance) {
-    instance = new TreeInfoService()
-  }
-  return instance
 }
 
 export default TreeInfoService
