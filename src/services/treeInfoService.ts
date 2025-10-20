@@ -92,24 +92,13 @@ export class TreeInfoService {
       const response = await this.nocoDBService.getLinkedRecords<Picture>(
         this.tableName,
         'pictures', // Verknüpfungsfeld-ID
-        treeId
+        treeId,
       )
       return response.list
     } catch (error) {
       console.error(`Fehler beim Abrufen der Bilder für Baum ${treeId}:`, error)
       return []
     }
-  }
-
-  /**
-   * Ruft einen Baum mit seinen Bildern ab
-   * @param id ID des Baums
-   * @returns Der Baum mit seinen Bildern
-   */
-  async getTreeWithPictures(id: string | number): Promise<TreeInfo> {
-    const tree = await this.getTreeById(id)
-    const pictures = await this.getTreePictures(id)
-    return { ...tree, pictures }
   }
 }
 
