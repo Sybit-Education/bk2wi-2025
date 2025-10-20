@@ -17,7 +17,7 @@ function toggleMenu() {
           >Flowbite</span
         >
       </a>
-      <div class="flex items-center md:order-2">
+      <div class="flex items-center ml-auto md:order-2">
         <button
           @click="toggleMenu"
           type="button"
