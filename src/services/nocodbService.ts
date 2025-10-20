@@ -46,7 +46,9 @@ export interface ListResponse<T> {
  */
 export class NocoDBService {
   private readonly apiClient: ApiClient
-  private tableIds: Record<string, string> = {}
+  private tableIds: Record<string, string> = {
+    treeInfo: 'msiujkp7wh01rvt'
+  }
 
   constructor(apiClient?: ApiClient) {
     // Wenn kein apiClient übergeben wird, erstellen wir einen Standard-Client
