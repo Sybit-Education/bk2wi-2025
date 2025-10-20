@@ -1,8 +1,5 @@
 import { ApiClient } from '../api/apiClient'
 
-// Singleton-Instanz für den NocoDBService
-let instance: NocoDBService | null = null
-
 /**
  * Hilfsfunktion zum Umwandeln des ersten Buchstabens eines Strings in Großbuchstaben
  * @param str Der zu konvertierende String
@@ -122,9 +119,7 @@ export interface ListResponse<T> {
  */
 export class NocoDBService {
   private readonly apiClient: ApiClient
-  private tableIds: Record<string, string> = {
-    treeInfo: 'msiujkp7wh01rvt',
-  }
+  private tableIds: Record<string, string> = {}
 
   constructor(apiClient?: ApiClient) {
     // Wenn kein apiClient übergeben wird, erstellen wir einen Standard-Client
@@ -134,14 +129,6 @@ export class NocoDBService {
         baseURL: import.meta.env.VITE_NOCODB_API_URL || 'http://localhost:8080',
         apiKey: import.meta.env.VITE_NOCODB_API_KEY || '',
       })
-  }
-
-  // Factory-Methode für Singleton-Zugriff
-  static getInstance(): NocoDBService {
-    if (!instance) {
-      instance = new NocoDBService()
-    }
-    return instance
   }
 
   /**
@@ -221,14 +208,14 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.get<ListResponse<T>>(url)
-      
+
       // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
-      if (response && response.list) {
-        response.list = response.list.map(item => 
-          lowercaseObjectKeys(item as Record<string, unknown>)
-        ) as T[];
+      if (response?.list) {
+        response.list = response.list.map((item) =>
+          lowercaseObjectKeys(item as Record<string, unknown>),
+        ) as T[]
       }
-      
+
       return response
     } catch (error) {
       console.error(`Fehler beim Abrufen der Datensätze aus ${tableName}:`, error)
@@ -257,7 +244,7 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.get<T>(url)
-      
+
       // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
       return lowercaseObjectKeys(response as Record<string, unknown>) as T
     } catch (error) {
@@ -433,7 +420,7 @@ export class NocoDBService {
         .join(',')
       queryParams.push(`fields=${capitalizedFields}`)
     }
-    
+
     if (options.sort) {
       const capitalizedSort = options.sort
         .split(',')
@@ -446,20 +433,20 @@ export class NocoDBService {
         .join(',')
       queryParams.push(`sort=${capitalizedSort}`)
     }
-    
+
     if (options.where) {
       // Ersetze Feldnamen in where-Bedingungen
       let whereClause = options.where
-      
+
       // Regex zum Finden von Feldnamen in where-Bedingungen
       const fieldRegex = /\(([a-zA-Z0-9_]+),/g
       whereClause = whereClause.replace(fieldRegex, (match, fieldName) => {
         return `(${capitalizeFirstLetter(fieldName)},`
       })
-      
+
       queryParams.push(`where=${whereClause}`)
     }
-    
+
     if (options.offset !== undefined) queryParams.push(`offset=${options.offset}`)
     if (options.limit !== undefined) queryParams.push(`limit=${options.limit}`)
 
@@ -469,14 +456,14 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.get<ListResponse<T>>(url)
-      
+
       // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
-      if (response && response.list) {
-        response.list = response.list.map(item => 
-          lowercaseObjectKeys(item as Record<string, unknown>)
-        ) as T[];
+      if (response?.list) {
+        response.list = response.list.map((item) =>
+          lowercaseObjectKeys(item as Record<string, unknown>),
+        ) as T[]
       }
-      
+
       return response
     } catch (error) {
       console.error(

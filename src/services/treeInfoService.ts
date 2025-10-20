@@ -27,6 +27,7 @@ export class TreeInfoService {
 
   constructor(nocoDBService?: NocoDBService) {
     this.nocoDBService = nocoDBService || new NocoDBService()
+    this.nocoDBService.registerTable(this.tableName, 'msiujkp7wh01rvt')
   }
 
   /**
