@@ -193,21 +193,21 @@ export class NocoDBService {
    */
   async deleteRecords<R = unknown>(
     tableName: string,
-    recordIds: number | Array<{ id: number }>,
+    recordIds: string | number | Array<{ id: string | number }> | Array<string | number>,
   ): Promise<R[]> {
     const tableId = this.getTableId(tableName)
     const url = `/api/v2/tables/${tableId}/records`
 
     // Formatiere die IDs in das erwartete Format
-    let dataArray: Array<{ id: number }>
+    let dataArray: Array<{ id: string | number }>
 
     if (Array.isArray(recordIds)) {
       // Prüfe, ob es bereits ein Array von Objekten mit ID ist
-      if (typeof recordIds[0] === 'object' && recordIds[0] !== null && 'id' in recordIds[0]) {
-        dataArray = recordIds as Array<{ id: number }>
+      if (recordIds.length > 0 && typeof recordIds[0] === 'object' && recordIds[0] !== null && 'id' in recordIds[0]) {
+        dataArray = recordIds as Array<{ id: string | number }>
       } else {
         // Konvertiere Array von IDs zu Array von Objekten mit ID
-        dataArray = (recordIds as Array<number>).map((id) => ({ id }))
+        dataArray = (recordIds as Array<string | number>).map((id) => ({ id }))
       }
     } else {
       // Konvertiere einzelne ID zu Array mit einem Objekt
