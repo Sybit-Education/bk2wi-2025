@@ -14,6 +14,16 @@ function capitalizeFirstLetter(str: string): string {
 }
 
 /**
+ * Hilfsfunktion zum Umwandeln des ersten Buchstabens eines Strings in Kleinbuchstaben
+ * @param str Der zu konvertierende String
+ * @returns String mit kleinem Anfangsbuchstaben
+ */
+function lowercaseFirstLetter(str: string): string {
+  if (!str || typeof str !== 'string' || str.length === 0) return str
+  return str.charAt(0).toLowerCase() + str.slice(1)
+}
+
+/**
  * Konvertiert alle Schlüssel eines Objekts, sodass der erste Buchstabe groß ist
  * @param obj Das zu konvertierende Objekt
  * @returns Ein neues Objekt mit konvertierten Schlüsseln
@@ -34,6 +44,34 @@ function capitalizeObjectKeys<T extends Record<string, unknown>>(obj: T): Record
         result[capitalizeFirstLetter(key)] = capitalizeObjectKeys(value as Record<string, unknown>)
       } else {
         result[capitalizeFirstLetter(key)] = value
+      }
+      return result
+    },
+    {} as Record<string, unknown>,
+  )
+}
+
+/**
+ * Konvertiert alle Schlüssel eines Objekts, sodass der erste Buchstabe klein ist
+ * @param obj Das zu konvertierende Objekt
+ * @returns Ein neues Objekt mit konvertierten Schlüsseln
+ */
+function lowercaseObjectKeys<T extends Record<string, unknown>>(obj: T): Record<string, unknown> {
+  if (!obj || typeof obj !== 'object' || obj === null) return obj
+
+  return Object.entries(obj).reduce(
+    (result, [key, value]) => {
+      // Arrays und verschachtelte Objekte rekursiv verarbeiten
+      if (Array.isArray(value)) {
+        result[lowercaseFirstLetter(key)] = value.map((item) =>
+          typeof item === 'object' && item !== null
+            ? lowercaseObjectKeys(item as Record<string, unknown>)
+            : item,
+        )
+      } else if (typeof value === 'object' && value !== null) {
+        result[lowercaseFirstLetter(key)] = lowercaseObjectKeys(value as Record<string, unknown>)
+      } else {
+        result[lowercaseFirstLetter(key)] = value
       }
       return result
     },
@@ -183,6 +221,14 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.get<ListResponse<T>>(url)
+      
+      // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
+      if (response && response.list) {
+        response.list = response.list.map(item => 
+          lowercaseObjectKeys(item as Record<string, unknown>)
+        ) as T[];
+      }
+      
       return response
     } catch (error) {
       console.error(`Fehler beim Abrufen der Datensätze aus ${tableName}:`, error)
@@ -211,7 +257,9 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.get<T>(url)
-      return response
+      
+      // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
+      return lowercaseObjectKeys(response as Record<string, unknown>) as T
     } catch (error) {
       console.error(`Fehler beim Abrufen des Datensatzes ${recordId} aus ${tableName}:`, error)
       throw error
@@ -385,7 +433,7 @@ export class NocoDBService {
         .join(',')
       queryParams.push(`fields=${capitalizedFields}`)
     }
-
+    
     if (options.sort) {
       const capitalizedSort = options.sort
         .split(',')
@@ -398,20 +446,20 @@ export class NocoDBService {
         .join(',')
       queryParams.push(`sort=${capitalizedSort}`)
     }
-
+    
     if (options.where) {
       // Ersetze Feldnamen in where-Bedingungen
       let whereClause = options.where
-
+      
       // Regex zum Finden von Feldnamen in where-Bedingungen
       const fieldRegex = /\(([a-zA-Z0-9_]+),/g
       whereClause = whereClause.replace(fieldRegex, (match, fieldName) => {
         return `(${capitalizeFirstLetter(fieldName)},`
       })
-
+      
       queryParams.push(`where=${whereClause}`)
     }
-
+    
     if (options.offset !== undefined) queryParams.push(`offset=${options.offset}`)
     if (options.limit !== undefined) queryParams.push(`limit=${options.limit}`)
 
@@ -421,6 +469,14 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.get<ListResponse<T>>(url)
+      
+      // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
+      if (response && response.list) {
+        response.list = response.list.map(item => 
+          lowercaseObjectKeys(item as Record<string, unknown>)
+        ) as T[];
+      }
+      
       return response
     } catch (error) {
       console.error(
