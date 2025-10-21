@@ -6,7 +6,7 @@
       </div>
       <p class="mt-2">Loading map...</p>
     </div>
-    
+
     <!-- Skeleton loader for map -->
     <div v-if="!mapReady" class="map-skeleton">
       <div class="map-skeleton-content">
@@ -17,43 +17,40 @@
       </div>
     </div>
 
-      <l-map
-        ref="map"
-        v-model:zoom="zoom"
-        class="map"
-        crs="EPSG:4326"
-        :min-zoom="4"
-        :max-zoom="17"
-        :bounds="bounds"
-        :max--bounds="maxBounds"
-        :use-global-leaflet="true"
-        :options="mapOptions"
-        @ready="mapLoaded"
-      >
-        <l-control-layers ref="control" position="bottomright"></l-control-layers>
-        <l-tile-layer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          layer-type="base"
-          name="Satellite"
-          attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
-        ></l-tile-layer>
+    <l-map
+      ref="map"
+      v-model:zoom="zoom"
+      class="map"
+      crs="EPSG:4326"
+      :min-zoom="4"
+      :max-zoom="17"
+      :bounds="bounds"
+      :max--bounds="maxBounds"
+      :use-global-leaflet="true"
+      :options="mapOptions"
+      @ready="mapLoaded"
+    >
+      <l-control-layers ref="control" position="bottomright"></l-control-layers>
+      <l-tile-layer
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        layer-type="base"
+        name="Satellite"
+        attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+      ></l-tile-layer>
 
-        <l-tile-layer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          layer-type="base"
-          name="OpenStreetMap"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        ></l-tile-layer>
+      <l-tile-layer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        layer-type="base"
+        name="OpenStreetMap"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      ></l-tile-layer>
 
-        <!-- Lade-Indikator für Pins -->
-        <div v-if="mapInitialized && !pinsReady" class="pins-loading-indicator">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading pins...</span>
-          </div>
-          <p>Loading project data...</p>
-        </div>
-      </l-map>
-    </div>
+      <!-- Lade-Indikator für Pins -->
+      <div v-if="mapInitialized" class="pins-loading-indicator">
+        <p>Loading data...</p>
+      </div>
+    </l-map>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -79,7 +76,6 @@ const maxBounds = shallowRef(
 const isLoadingMap = ref(true)
 const mapReady = ref(true) // Karte sofort als bereit markieren
 const mapInitialized = ref(false)
-const pinsReady = ref(false) // Neuer Status für Pins
 
 const mapOptions = ref({
   zoomSnap: 0.5,
@@ -135,7 +131,6 @@ const mapLoaded = () => {
 
   // Karte sofort als geladen markieren
   isLoadingMap.value = false
-
 
   // Optimiere die Leaflet-Karte für bessere Performance
   if (map.value?.leafletObject) {
