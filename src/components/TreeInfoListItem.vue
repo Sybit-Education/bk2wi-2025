@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TreeInfo } from '@/models/treeInfo'
-import { FwbCard } from 'flowbite-vue'
+import { FwbCard } from 'flowbite-vue/dist/components'
 import { computed } from 'vue'
 
 const props = defineProps<{
