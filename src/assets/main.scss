@@ -2,6 +2,14 @@
 
 @use 'flowbite/src/themes/default';
 
+/* import Flowbite Vue styles */
+@import 'flowbite-vue/index.css';
+
+/* Flowbite plugin is configured in tailwind.config.js */
+
+/* add Flowbite Vue directory using @source directive */
+@source "../node_modules/flowbite-vue";
+
 @layer components {
   a,
   .green {

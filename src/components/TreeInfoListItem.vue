@@ -16,21 +16,14 @@ const imageUrl = computed(() => {
 })
 </script>
 
-<style scoped>
-.tree-info-item :deep(img) {
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
-}
-
-.tree-info-item.image-card :deep(img) {
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 0.5rem;
-}
-</style>
+<style scoped></style>
 
 <template>
   <fwb-card
-    :class="['tree-info-item w-sd hover:shadow-md transition-shadow bg-white rounded-lg overflow-hidden', { 'image-card': hasImage }]"
+    :class="[
+      'tree-info-item w-sd hover:shadow-md transition-shadow bg-white rounded-lg overflow-hidden',
+      { 'image-card': hasImage },
+    ]"
     :img-src="imageUrl"
     :img-alt="tree.name"
     :variant="hasImage ? 'image' : 'default'"
@@ -41,7 +34,7 @@ const imageUrl = computed(() => {
       </div>
 
       <div class="text-gray-600">
-        <p v-if="tree.description" class="mt-3 text-sm italic">{{ tree.description }}</p>
+        <p v-if="tree.abstract" class="mt-3 text-sm italic">{{ tree.abstract }}</p>
       </div>
     </div>
   </fwb-card>

@@ -6,6 +6,7 @@ import type { Picture } from './picture'
 export interface TreeInfo {
   id?: string | number
   name: string
+  abstract?: string
   description?: string
   picture: Picture[]
 }
