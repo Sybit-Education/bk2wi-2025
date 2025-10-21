@@ -18,4 +18,4 @@ export interface Picture {
   [key: string]: unknown
 }
 
-export default Picture
+// Export the interface directly, not as default

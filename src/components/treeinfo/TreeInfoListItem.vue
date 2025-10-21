@@ -11,8 +11,8 @@ const hasImage = computed(() => {
   return props.tree.picture && props.tree.picture.length > 0 && props.tree.picture[0]?.signedUrl
 })
 
-const imageUrl = computed(() => {
-  return hasImage.value ? props.tree?.picture[0]?.signedUrl : ''
+const imageUrl = computed((): string => {
+  return hasImage.value ? (props.tree?.picture[0]?.signedUrl as string) : ''
 })
 </script>
 
