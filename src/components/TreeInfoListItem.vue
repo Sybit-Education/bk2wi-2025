@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TreeInfo } from '@/models/treeInfo'
+import { FwbCard } from 'flowbite-vue'
 
 const props = defineProps<{
   tree: TreeInfo
@@ -7,8 +8,10 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div
-    class="tree-info-item p-5 border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white"
+  <fwb-card
+    class="tree-info-item border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white"
+    :img-src="tree.picture[0]?.signedUrl || ''"
+    variant="horizontal"
   >
     <div class="flex justify-between items-start mb-3">
       <h3 class="text-xl font-semibold text-gray-800">{{ tree.name }}</h3>
@@ -30,5 +33,5 @@ const props = defineProps<{
       </div>
       <p v-if="tree.description" class="mt-3 text-sm italic">{{ tree.description }}</p>
     </div>
-  </div>
+  </fwb-card>
 </template>
