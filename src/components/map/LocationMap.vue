@@ -61,20 +61,20 @@ import L, { latLngBounds, LatLngExpression } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer } from '@vue-leaflet/vue-leaflet'
 
 // Verwende shallowRef für nicht-reaktive Objekte für bessere Performance
-const zoom = ref(5)
+const zoom = ref(12.5)
 // Define a center point for the map (important to prevent the error)
-const center = ref<LatLngExpression>([-2.8245583, 8.6110247])
+const center = ref<LatLngExpression>([47.73980909820898, 8.970851784462777])
 
 const bounds = shallowRef(
   latLngBounds([
-    [-14.5981259, 5.8997233],
-    [8.9490075, 11.322326],
+    [47.797502793976825, 8.900488931092678],
+    [47.7228286935113, 9.059525095436436],
   ]),
 )
 const maxBounds = shallowRef(
   latLngBounds([
-    [-14.6, 5.9],
-    [8.9490075, 11.322326],
+    [47.797502793976825, 8.900488931092678],
+    [47.7228286935113, 9.059525095436436],
   ]),
 )
 const isLoadingMap = ref(true)
@@ -127,7 +127,7 @@ const map = ref<LeafletMapRef>({})
 onBeforeMount(() => {
   // Karte ist sofort bereit (mapReady ist bereits true)
   isLoadingMap.value = false
-  
+
   // Ensure center is set before map initialization
   if (!center.value) {
     // Default center point if none is provided
