@@ -20,10 +20,7 @@ const imageUrl = computed((): string => {
 
 <template>
   <fwb-card
-    :class="[
-      'tree-info-item w-sd hover:shadow-md transition-shadow bg-white rounded-lg overflow-hidden',
-      { 'image-card': hasImage },
-    ]"
+    class="tree-info-item w-sd hover:shadow-md transition-shadow bg-white rounded-lg overflow-hidden"
     :img-src="imageUrl"
     :img-alt="tree.name"
     :variant="hasImage ? 'image' : 'default'"
