@@ -15,7 +15,7 @@ function toggleMenu() {
         <a href="/" class="flex items-center space-x-3 mr-5">
           <img src="../../assets/ai-generated-tree.png" class="h-15" alt="Flowbite Logo" />
           <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-            >TreeMates</span
+            >Mission Green</span
           >
         </a>
         <div class="flex items-center ml-auto md:order-2">

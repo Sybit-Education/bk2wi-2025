@@ -1,22 +1,5 @@
 <template>
-  <div class="map">
-    <div class="map-overlay" v-if="isLoadingMap">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading map...</span>
-      </div>
-      <p class="mt-2">Loading map...</p>
-    </div>
-
-    <!-- Skeleton loader for map -->
-    <div v-if="!mapReady" class="map-skeleton">
-      <div class="map-skeleton-content">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading map...</span>
-        </div>
-        <p class="mt-2">Loading map...</p>
-      </div>
-    </div>
-
+  <div class="map rounded-lg shadow-lg overflow-hidden">
     <l-map
       ref="map"
       v-model:zoom="zoom"
@@ -24,7 +7,7 @@
       class="map"
       crs="EPSG:4326"
       :min-zoom="12"
-      :max-zoom="17"
+      :max-zoom="18"
       :bounds="bounds"
       :max-bounds="maxBounds"
       :use-global-leaflet="true"
@@ -45,11 +28,6 @@
         name="OpenStreetMap"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       ></l-tile-layer>
-
-      <!-- Lade-Indikator für Pins -->
-      <div v-if="mapInitialized" class="pins-loading-indicator">
-        <p>Loading data...</p>
-      </div>
     </l-map>
   </div>
 </template>
@@ -57,10 +35,9 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount } from 'vue'
 
-import L, { latLngBounds, LatLngExpression } from 'leaflet'
+import L, { latLngBounds, type LatLngExpression } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer } from '@vue-leaflet/vue-leaflet'
 
-// Verwende shallowRef für nicht-reaktive Objekte für bessere Performance
 const zoom = ref(12.5)
 // Define a center point for the map (important to prevent the error)
 const center = ref<LatLngExpression>([47.73980909820898, 8.970851784462777])
@@ -73,12 +50,11 @@ const bounds = shallowRef(
 )
 const maxBounds = shallowRef(
   latLngBounds([
-    [47.797502793976825, 8.900488931092678],
-    [47.7228286935113, 9.059525095436436],
+    [47.8, 8.9],
+    [47.7, 9.159],
   ]),
 )
 const isLoadingMap = ref(true)
-const mapReady = ref(true) // Karte sofort als bereit markieren
 const mapInitialized = ref(false)
 
 const mapOptions = ref({

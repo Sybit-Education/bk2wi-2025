@@ -3,8 +3,8 @@ import LocationMap from '../components/map/LocationMap.vue'
 </script>
 
 <template>
-  <div class="map-view">
-    <h1 class="sr-only">Kartenansicht</h1>
+  <div class="map-view container mx-auto px-4 py-8">
+    <h1>Kartenansicht</h1>
     <LocationMap />
   </div>
 </template>

@@ -3,7 +3,6 @@ import TreeInfoList from '../components/treeinfo/TreeInfoList.vue'
 </script>
 
 <template>
-  <main>
     <div class="container mx-auto px-4 py-8">
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-800">Baumarten</h1>
@@ -23,5 +22,4 @@ import TreeInfoList from '../components/treeinfo/TreeInfoList.vue'
         >
       </div>
     </div>
-  </main>
 </template>
