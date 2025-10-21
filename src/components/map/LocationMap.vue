@@ -1,15 +1,21 @@
 <template>
   <div class="map">
-    <b-overlay :show="isLoadingMap" fixed style="height: 100vh" :opacity="0.5">
-      <!-- Skeleton loader for map -->
-      <div v-if="!mapReady" class="map-skeleton">
-        <div class="map-skeleton-content">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading map...</span>
-          </div>
-          <p class="mt-2">Loading map...</p>
-        </div>
+    <div class="map-overlay" v-if="isLoadingMap">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading map...</span>
       </div>
+      <p class="mt-2">Loading map...</p>
+    </div>
+    
+    <!-- Skeleton loader for map -->
+    <div v-if="!mapReady" class="map-skeleton">
+      <div class="map-skeleton-content">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading map...</span>
+        </div>
+        <p class="mt-2">Loading map...</p>
+      </div>
+    </div>
 
       <l-map
         ref="map"
@@ -47,8 +53,7 @@
           <p>Loading project data...</p>
         </div>
       </l-map>
-    </b-overlay>
-  </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -271,6 +276,20 @@ const updateMaxBoundsTimeout = ref<number | null>(null)
 
 .map-skeleton-content {
   text-align: center;
+}
+
+.map-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 .pins-loading-indicator {
