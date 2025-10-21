@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TreeInfoList from '../components/TreeInfoList.vue'
+import TreeInfoList from '../components/treeinfo/TreeInfoList.vue'
 </script>
 
 <template>
