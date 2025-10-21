@@ -23,7 +23,7 @@
       :center="center"
       class="map"
       crs="EPSG:4326"
-      :min-zoom="4"
+      :min-zoom="12"
       :max-zoom="17"
       :bounds="bounds"
       :max-bounds="maxBounds"
