@@ -95,7 +95,28 @@ const mapOptions = ref({
   updateWhenZooming: false,
   updateWhenIdle: true,
 })
-const map = ref<unknown>(null)
+// Definiere einen Typ für die Leaflet-Map mit leafletObject
+interface LeafletMapRef {
+  leafletObject?: {
+    options: {
+      trackResize: boolean
+      renderer: unknown
+      zoomSnap: number
+      wheelPxPerZoomLevel: number
+    }
+    _container?: {
+      style: {
+        transform: string
+        willChange: string
+        backfaceVisibility: string
+      }
+    }
+    on: (event: string, callback: () => void) => void
+    getZoom: () => number
+  }
+}
+
+const map = ref<LeafletMapRef>({})
 
 // Sofort mit dem Laden der Karte beginnen
 onBeforeMount(() => {
