@@ -20,12 +20,13 @@
     <l-map
       ref="map"
       v-model:zoom="zoom"
+      :center="center"
       class="map"
       crs="EPSG:4326"
       :min-zoom="4"
       :max-zoom="17"
       :bounds="bounds"
-      :max--bounds="maxBounds"
+      :max-bounds="maxBounds"
       :use-global-leaflet="true"
       :options="mapOptions"
       @ready="mapLoaded"
@@ -56,11 +57,14 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount } from 'vue'
 
-import L, { latLngBounds } from 'leaflet'
+import L, { latLngBounds, LatLngExpression } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer } from '@vue-leaflet/vue-leaflet'
 
 // Verwende shallowRef für nicht-reaktive Objekte für bessere Performance
 const zoom = ref(5)
+// Define a center point for the map (important to prevent the error)
+const center = ref<LatLngExpression>([-2.8245583, 8.6110247])
+
 const bounds = shallowRef(
   latLngBounds([
     [-14.5981259, 5.8997233],
@@ -123,6 +127,12 @@ const map = ref<LeafletMapRef>({})
 onBeforeMount(() => {
   // Karte ist sofort bereit (mapReady ist bereits true)
   isLoadingMap.value = false
+  
+  // Ensure center is set before map initialization
+  if (!center.value) {
+    // Default center point if none is provided
+    center.value = [-2.8245583, 8.6110247]
+  }
 })
 
 // Verwende eine debounced Funktion für mapLoaded mit defineAsyncComponent für bessere Performance
@@ -134,6 +144,11 @@ const mapLoaded = () => {
 
   // Optimiere die Leaflet-Karte für bessere Performance
   if (map.value?.leafletObject) {
+    // Set the center and zoom explicitly to ensure the map is properly initialized
+    const leafletMap = map.value.leafletObject
+    if (!leafletMap._loaded) {
+      leafletMap.setView(center.value, zoom.value)
+    }
     // Deaktiviere automatisches Zoomen während des Ladens
     map.value.leafletObject.options.trackResize = false
 
