@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount, onMounted } from 'vue'
 
-import L, { latLngBounds, type LatLngExpression, type PointTuple } from 'leaflet'
+import L, { latLngBounds, type PointTuple } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
