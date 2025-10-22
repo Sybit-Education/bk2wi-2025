@@ -33,7 +33,7 @@
       <l-geo-json
         v-if="radolfzellBoundary"
         :geojson="radolfzellBoundary"
-        :options-style="radolfzellStyle"
+        :options="geoJsonOptions"
       ></l-geo-json>
 
       <!-- Marker für jeden Standort (nach dem Polygon laden, damit sie darüber liegen) -->
@@ -138,17 +138,25 @@ const locations = ref<Location[]>([])
 const isLoadingLocations = ref(false)
 const selectedLocation = ref<Location | null>(null)
 
-// Style für das Radolfzell-Polygon
-const radolfzellStyle = () => {
-  console.log('Applying Radolfzell boundary style')
-  return {
-    color: '#3388ff',
-    weight: 2,
-    opacity: 1,
-    fillColor: '#3388ff',
-    fillOpacity: 0.2,
+// Computed property für GeoJSON-Optionen
+const geoJsonOptions = ref({
+  style: () => {
+    console.log('Applying Radolfzell boundary style')
+    return {
+      color: '#3388ff',
+      weight: 2,
+      opacity: 1,
+      fillColor: '#3388ff',
+      fillOpacity: 0, // Komplett transparent
+    }
+  },
+  onEachFeature: (feature: any, layer: any) => {
+    // Optional: Hier können Sie Tooltips oder Popups hinzufügen
+    if (feature.properties && feature.properties.name) {
+      layer.bindTooltip(feature.properties.name)
+    }
   }
-}
+})
 
 // Lade Radolfzell GeoJSON
 const loadRadolfzellBoundary = async () => {
