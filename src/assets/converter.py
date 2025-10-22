@@ -2,11 +2,13 @@
 try:
     from shapely import wkt
     from shapely.ops import transform
-    import pyproj, json
-except ImportError:
-    print("Error: Required packages are missing.")
+    import pyproj, json, sys
+except ImportError as e:
+    print(f"Error: {e}")
+    print("Python path:", sys.path)
+    print("Python version:", sys.version)
     print("Please install the required packages with:")
-    print("pip install shapely pyproj")
+    print("python -m pip install shapely pyproj")
     exit(1)
 
 # dein Polygon (verkürzt zur Übersicht)
