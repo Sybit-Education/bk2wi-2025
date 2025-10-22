@@ -68,7 +68,15 @@
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount, onMounted } from 'vue'
 
 import L, { latLngBounds, type LatLngExpression, type PointTuple, GeoJSON } from 'leaflet'
-import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon, LGeoJson } from '@vue-leaflet/vue-leaflet'
+import {
+  LMap,
+  LControlLayers,
+  LTileLayer,
+  LMarker,
+  LPopup,
+  LIcon,
+  LGeoJson,
+} from '@vue-leaflet/vue-leaflet'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
 import { FwbSpinner } from 'flowbite-vue'
@@ -79,14 +87,14 @@ const center = ref<PointTuple>([47.73980909820898, 8.970851784462777])
 
 const bounds = shallowRef(
   latLngBounds([
-    [47.797502793976825, 8.900488931092678],
-    [47.7228286935113, 9.059525095436436],
+    [47.732, 8.906],
+    [47.814, 8.969],
   ]),
 )
 const maxBounds = shallowRef(
   latLngBounds([
-    [47.8, 8.9],
-    [47.7, 9.159],
+    [47.71, 8.9],
+    [47.87, 9.1],
   ]),
 )
 
@@ -132,59 +140,59 @@ const selectedLocation = ref<Location | null>(null)
 
 // Style für das Radolfzell-Polygon
 const radolfzellStyle = {
-  style: function() {
+  style: function () {
     return {
       weight: 2,
       color: '#3388ff',
-      opacity: 1,
+      opacity: 0.1,
       fillColor: '#3388ff',
-      fillOpacity: 0.1
-    };
+      fillOpacity: 1,
+    }
   },
   // Invertierter Masken-Effekt für Bereiche außerhalb von Radolfzell
-  onEachFeature: function(feature: any, layer: any) {
+  onEachFeature: function (feature: any, layer: any) {
     // Erstelle eine invertierte Maske, die alles außerhalb des Polygons abdunkelt
-    const bounds = layer.getBounds();
+    const bounds = layer.getBounds()
     const outerBounds = L.latLngBounds(
       L.latLng(bounds.getSouth() - 1, bounds.getWest() - 1),
-      L.latLng(bounds.getNorth() + 1, bounds.getEast() + 1)
-    );
-    
+      L.latLng(bounds.getNorth() + 1, bounds.getEast() + 1),
+    )
+
     // Erstelle ein Rechteck, das die gesamte Karte abdeckt
     const outerRect = L.rectangle(outerBounds, {
       color: 'transparent',
       fillColor: '#000',
       fillOpacity: 0.35,
-      interactive: false
-    });
-    
+      interactive: false,
+    })
+
     // Füge das Rechteck zur Karte hinzu
     if (map.value?.leafletObject) {
-      outerRect.addTo(map.value.leafletObject);
-      
+      outerRect.addTo(map.value.leafletObject)
+
       // Verwende das Polygon als "Loch" im Rechteck
       if (layer.toGeoJSON) {
-        const geoJson = layer.toGeoJSON();
+        const geoJson = layer.toGeoJSON()
         if (geoJson.geometry && geoJson.geometry.coordinates) {
           outerRect.setStyle({
             fillRule: 'evenodd',
-            clipPath: `polygon(100% 0, 0 0, 0 100%, 100% 100%)`
-          });
+            clipPath: `polygon(100% 0, 0 0, 0 100%, 100% 100%)`,
+          })
         }
       }
     }
-  }
-};
+  },
+}
 
 // Lade Radolfzell GeoJSON
 const loadRadolfzellBoundary = async () => {
   try {
-    const response = await fetch('/radolfzell.json');
-    radolfzellBoundary.value = await response.json();
+    const response = await fetch('/radolfzell.geojson')
+    radolfzellBoundary.value = await response.json()
   } catch (error) {
-    console.error('Fehler beim Laden der Radolfzell-Grenzen:', error);
+    console.error('Fehler beim Laden der Radolfzell-Grenzen:', error)
   }
-};
+}
 
 // Lade Standorte
 const loadLocations = async () => {
@@ -216,8 +224,8 @@ onBeforeMount(() => {
 
 // Lade Standorte, wenn die Komponente gemountet wird
 onMounted(() => {
-  loadLocations();
-  loadRadolfzellBoundary();
+  loadLocations()
+  loadRadolfzellBoundary()
 })
 
 // Verwende eine debounced Funktion für mapLoaded mit defineAsyncComponent für bessere Performance
