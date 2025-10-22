@@ -29,14 +29,14 @@
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       ></l-tile-layer>
 
-      <!-- Radolfzell Grenzen -->
+      <!-- Radolfzell Grenzen (zuerst laden, damit sie unter den Markern liegen) -->
       <l-geo-json
         v-if="radolfzellBoundary"
         :geojson="radolfzellBoundary"
         :options="radolfzellStyle"
       ></l-geo-json>
 
-      <!-- Marker für jeden Standort -->
+      <!-- Marker für jeden Standort (nach dem Polygon laden, damit sie darüber liegen) -->
       <l-marker
         v-for="location in locations"
         :key="location.id"
