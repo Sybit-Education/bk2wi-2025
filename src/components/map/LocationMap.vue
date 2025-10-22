@@ -37,15 +37,13 @@
         @click="selectLocation(location)"
       >
         <l-icon
-          :icon-url="'/tree-marker.png'"
-          :icon-size="[32, 32]"
-          :icon-anchor="[16, 32]"
+          :icon-url="'/tree-marker.svg'"
+          :icon-size="[24, 24]"
+          :icon-anchor="[12, 24]"
         ></l-icon>
         <l-popup>
           <div>
             <h3 class="font-bold">{{ location.name }}</h3>
-            <p v-if="location.description">{{ location.description }}</p>
-            <p v-if="location.address">{{ location.address }}</p>
           </div>
         </l-popup>
       </l-marker>
