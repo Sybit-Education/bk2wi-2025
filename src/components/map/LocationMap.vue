@@ -49,11 +49,9 @@
       </l-marker>
     </l-map>
 
-    <!-- Loading-Indikator für Standorte -->
+    <!-- Loading-Indikator für Standorte mit Flowbite -->
     <div v-if="isLoadingLocations" class="pins-loading-indicator">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Lade Standorte...</span>
-      </div>
+      <FbSpinner size="lg" color="info" />
       <div class="mt-2">Lade Standorte...</div>
     </div>
   </div>
@@ -66,6 +64,7 @@ import L, { latLngBounds, type LatLngExpression, type Marker } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
+import { FbSpinner } from 'flowbite-vue'
 
 const zoom = ref(12.5)
 // Define a center point for the map (important to prevent the error)
@@ -348,6 +347,10 @@ const updateMaxBoundsTimeout = ref<number | null>(null)
   z-index: 1000;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Optimiere Leaflet-Container für bessere Performance */
