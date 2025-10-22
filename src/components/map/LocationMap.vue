@@ -146,7 +146,7 @@ const radolfzellStyle = {
       color: '#3388ff',
       opacity: 0.1,
       fillColor: '#3388ff',
-      fillOpacity: 1,
+      fillOpacity: 0, // Komplett transparent
     }
   },
   // Invertierter Masken-Effekt für Bereiche außerhalb von Radolfzell
