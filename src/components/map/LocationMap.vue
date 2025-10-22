@@ -28,15 +28,46 @@
         name="OpenStreetMap"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       ></l-tile-layer>
+      
+      <!-- Marker für jeden Standort -->
+      <l-marker 
+        v-for="location in locations" 
+        :key="location.id" 
+        :lat-lng="[location.latitude, location.longitude]"
+        @click="selectLocation(location)"
+      >
+        <l-icon
+          :icon-url="'/tree-marker.png'"
+          :icon-size="[32, 32]"
+          :icon-anchor="[16, 32]"
+        ></l-icon>
+        <l-popup>
+          <div>
+            <h3 class="font-bold">{{ location.name }}</h3>
+            <p v-if="location.description">{{ location.description }}</p>
+            <p v-if="location.address">{{ location.address }}</p>
+          </div>
+        </l-popup>
+      </l-marker>
     </l-map>
+    
+    <!-- Loading-Indikator für Standorte -->
+    <div v-if="isLoadingLocations" class="pins-loading-indicator">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Lade Standorte...</span>
+      </div>
+      <div class="mt-2">Lade Standorte...</div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount } from 'vue'
+import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount, onMounted } from 'vue'
 
-import L, { latLngBounds, type LatLngExpression } from 'leaflet'
-import { LMap, LControlLayers, LTileLayer } from '@vue-leaflet/vue-leaflet'
+import L, { latLngBounds, type LatLngExpression, type Marker } from 'leaflet'
+import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet'
+import { LocationService } from '@/services/locationService'
+import type { Location } from '@/models/location'
 
 const zoom = ref(12.5)
 // Define a center point for the map (important to prevent the error)
@@ -99,6 +130,37 @@ interface LeafletMapRef {
 
 const map = ref<LeafletMapRef>({})
 
+// Standorte
+const locationService = new LocationService()
+const locations = ref<Location[]>([])
+const isLoadingLocations = ref(false)
+const selectedLocation = ref<Location | null>(null)
+
+// Lade Standorte
+const loadLocations = async () => {
+  isLoadingLocations.value = true
+  try {
+    const response = await locationService.getAllLocations(100, 0)
+    locations.value = response.list
+    
+    // Wenn Standorte vorhanden sind, zentriere die Karte auf den ersten Standort
+    if (locations.value.length > 0 && map.value?.leafletObject) {
+      const firstLocation = locations.value[0]
+      center.value = [firstLocation.latitude, firstLocation.longitude]
+    }
+  } catch (error) {
+    console.error('Fehler beim Laden der Standorte:', error)
+  } finally {
+    isLoadingLocations.value = false
+  }
+}
+
+// Wähle einen Standort aus
+const selectLocation = (location: Location) => {
+  selectedLocation.value = location
+  // Hier könnten weitere Aktionen ausgeführt werden, z.B. Emits an übergeordnete Komponenten
+}
+
 // Sofort mit dem Laden der Karte beginnen
 onBeforeMount(() => {
   // Karte ist sofort bereit (mapReady ist bereits true)
@@ -109,6 +171,11 @@ onBeforeMount(() => {
     // Default center point if none is provided
     center.value = [-2.8245583, 8.6110247]
   }
+})
+
+// Lade Standorte, wenn die Komponente gemountet wird
+onMounted(() => {
+  loadLocations()
 })
 
 // Verwende eine debounced Funktion für mapLoaded mit defineAsyncComponent für bessere Performance
