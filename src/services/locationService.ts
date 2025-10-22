@@ -109,7 +109,7 @@ export class LocationService {
     try {
       const [lat, lng] = geoPoint.split(';').map(Number)
 
-      if (isNaN(lat) || isNaN(lng)) {
+      if (isNaN(Number(lat)) || isNaN(Number(lng))) {
         console.warn(`Invalid geoPoint format: "${geoPoint}". Expected format: "lat;lng"`)
         return { lat: 47.73980909820898, lng: 8.970851784462777 } as LatLng
       }

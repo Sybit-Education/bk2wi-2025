@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount, onMounted } from 'vue'
 
-import L, { latLngBounds, type LatLngExpression } from 'leaflet'
+import L, { latLngBounds, type LatLngExpression, type LatLngTuple } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
@@ -68,7 +68,7 @@ import { FwbSpinner } from 'flowbite-vue'
 
 const zoom = ref(12.5)
 // Define a center point for the map (important to prevent the error)
-const center = ref<LatLngExpression>([47.73980909820898, 8.970851784462777])
+const center = ref<LatLngTuple>([47.73980909820898, 8.970851784462777])
 
 const bounds = shallowRef(
   latLngBounds([
