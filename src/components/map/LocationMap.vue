@@ -33,7 +33,7 @@
       <l-geo-json
         v-if="radolfzellBoundary"
         :geojson="radolfzellBoundary"
-        :options="radolfzellStyle"
+        :options-style="radolfzellStyle"
       ></l-geo-json>
 
       <!-- Marker für jeden Standort (nach dem Polygon laden, damit sie darüber liegen) -->
@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount, onMounted } from 'vue'
 
-import L, { latLngBounds, type PointTuple } from 'leaflet'
+import { latLngBounds, type PointTuple } from 'leaflet'
 import {
   LMap,
   LControlLayers,
@@ -139,45 +139,15 @@ const isLoadingLocations = ref(false)
 const selectedLocation = ref<Location | null>(null)
 
 // Style für das Radolfzell-Polygon
-const radolfzellStyle = {
-  // Invertierter Masken-Effekt für Bereiche außerhalb von Radolfzell
-  onEachFeature: function (feature: any, layer: any) {
-    // Erstelle eine invertierte Maske, die alles außerhalb des Polygons abdunkelt
-    const bounds = layer.getBounds()
-    const outerBounds = L.latLngBounds(
-      L.latLng(bounds.getSouth() - 1, bounds.getWest() - 1),
-      L.latLng(bounds.getNorth() + 1, bounds.getEast() + 1),
-    )
-
-    // Erstelle ein Rechteck, das die gesamte Karte abdeckt
-    const outerRect = L.rectangle(outerBounds, {
-      color: 'transparent',
-      fillColor: '#000',
-      weight: 0,
-      fillOpacity: 0.2,
-      interactive: false,
-    })
-
-    // Füge das Rechteck zur Karte hinzu
-    if (map.value?.leafletObject) {
-      outerRect.addTo(map.value.leafletObject)
-
-      // Verwende das Polygon als "Loch" im Rechteck
-      if (layer.toGeoJSON) {
-        const geoJson = layer.toGeoJSON()
-        if (geoJson.geometry && geoJson.geometry.coordinates) {
-          outerRect.setStyle({
-            color: '#ffcc00',
-            weight: 2,
-            fillColor: '#fff',
-            fillOpacity: 0.1,
-            fillRule: 'evenodd',
-            clipPath: `polygon(100% 0, 0 0, 0 100%, 100% 100%)`,
-          })
-        }
-      }
-    }
-  },
+const radolfzellStyle = () => {
+  console.log('Applying Radolfzell boundary style')
+  return {
+    color: '#3388ff',
+    weight: 2,
+    opacity: 1,
+    fillColor: '#3388ff',
+    fillOpacity: 0.2,
+  }
 }
 
 // Lade Radolfzell GeoJSON
