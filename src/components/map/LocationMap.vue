@@ -51,7 +51,7 @@
 
     <!-- Loading-Indikator für Standorte mit Flowbite -->
     <div v-if="isLoadingLocations" class="pins-loading-indicator">
-      <FbSpinner size="lg" color="info" />
+      <FwbSpinner size="10" color="green" />
       <div class="mt-2">Lade Standorte...</div>
     </div>
   </div>
@@ -64,7 +64,7 @@ import L, { latLngBounds, type LatLngExpression, type Marker } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
-import { FbSpinner } from 'flowbite-vue'
+import { FwbSpinner } from 'flowbite-vue'
 
 const zoom = ref(12.5)
 // Define a center point for the map (important to prevent the error)
