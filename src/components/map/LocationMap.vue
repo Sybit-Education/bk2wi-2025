@@ -33,7 +33,7 @@
       <l-marker
         v-for="location in locations"
         :key="location.id"
-        :lat-lng="[location.latitude, location.longitude]"
+        :lat-lng="location.latLang"
         @click="selectLocation(location)"
       >
         <l-icon

@@ -23,7 +23,9 @@ export class LocationService {
     })
 
     for (const loc of response.list) {
-      loc.latLang = this.convertGeoPointToLatLngExpression(loc['geoLocation'] as string)
+      if (loc.geoLocation) {
+        loc.latLang = this.convertGeoPointToLatLngExpression(loc.geoLocation)
+      }
     }
     console.log('Fetched locations:', response)
     return response
@@ -33,9 +35,11 @@ export class LocationService {
    * Holt einen Standort anhand seiner ID
    */
   async getLocationById(id: string | number): Promise<Location> {
-    const result = await this.nocoDBService.getRecord(this.tableName, id)
-    const location = this.convertGeoPointToLatLngExpression(result['geoLocation'] as string)
-    return { ...result, latLang: location }
+    const result = await this.nocoDBService.getRecord<Location>(this.tableName, id)
+    if (result.geoLocation) {
+      result.latLang = this.convertGeoPointToLatLngExpression(result.geoLocation)
+    }
+    return result
   }
 
   /**
@@ -96,7 +100,24 @@ export class LocationService {
   }
 
   private convertGeoPointToLatLngExpression(geoPoint: string): LatLng {
-    const [lat, lng] = geoPoint.split(';').map(Number)
-    return { lat, lng } as LatLng
+    if (!geoPoint) {
+      console.warn('Empty geoPoint provided to convertGeoPointToLatLngExpression')
+      // Return a default location to prevent errors (you may want to adjust this)
+      return { lat: 47.73980909820898, lng: 8.970851784462777 } as LatLng
+    }
+    
+    try {
+      const [lat, lng] = geoPoint.split(';').map(Number)
+      
+      if (isNaN(lat) || isNaN(lng)) {
+        console.warn(`Invalid geoPoint format: "${geoPoint}". Expected format: "lat;lng"`)
+        return { lat: 47.73980909820898, lng: 8.970851784462777 } as LatLng
+      }
+      
+      return { lat, lng } as LatLng
+    } catch (error) {
+      console.error('Error parsing geoPoint:', error, geoPoint)
+      return { lat: 47.73980909820898, lng: 8.970851784462777 } as LatLng
+    }
   }
 }
