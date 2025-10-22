@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount, onMounted } from 'vue'
 
-import L, { latLngBounds, type LatLngExpression, type Marker } from 'leaflet'
+import L, { latLngBounds, type LatLngExpression } from 'leaflet'
 import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
@@ -82,7 +82,7 @@ const maxBounds = shallowRef(
     [47.7, 9.159],
   ]),
 )
-const isLoadingMap = ref(true)
+
 const mapInitialized = ref(false)
 
 const mapOptions = ref({
@@ -91,17 +91,6 @@ const mapOptions = ref({
   touchZoom: true,
   wheelPxPerZoomLevel: 60,
   preferCanvas: true, // Verwende Canvas-Renderer für bessere Performance
-  renderer: L.canvas({
-    padding: 0.5,
-    tolerance: 5, // Erhöhte Toleranz für bessere Performance
-  }) as unknown,
-  // Reduziere die Anzahl der Neuberechnungen während des Zoomens/Verschiebens
-  zoomAnimation: false,
-  markerZoomAnimation: false,
-  // Deaktiviere Animationen auf mobilen Geräten für bessere Performance
-  fadeAnimation: !('ontouchstart' in window),
-  // Reduziere die Anzahl der Neuberechnungen während des Zoomens
-  updateWhenZooming: false,
   updateWhenIdle: true,
 })
 // Definiere einen Typ für die Leaflet-Map mit leafletObject
@@ -154,9 +143,6 @@ const selectLocation = (location: Location) => {
 
 // Sofort mit dem Laden der Karte beginnen
 onBeforeMount(() => {
-  // Karte ist sofort bereit (mapReady ist bereits true)
-  isLoadingMap.value = false
-
   // Ensure center is set before map initialization
   if (!center.value) {
     // Default center point if none is provided
@@ -173,16 +159,8 @@ onMounted(() => {
 const mapLoaded = () => {
   mapInitialized.value = true
 
-  // Karte sofort als geladen markieren
-  isLoadingMap.value = false
-
   // Optimiere die Leaflet-Karte für bessere Performance
   if (map.value?.leafletObject) {
-    // Set the center and zoom explicitly to ensure the map is properly initialized
-    const leafletMap = map.value.leafletObject
-    if (!leafletMap._loaded) {
-      leafletMap.setView(center.value, zoom.value)
-    }
     // Deaktiviere automatisches Zoomen während des Ladens
     map.value.leafletObject.options.trackResize = false
 
@@ -224,7 +202,7 @@ watch(
           clearTimeout(zoomTimeout)
         }
 
-        zoomTimeout = window.setTimeout(() => {
+        zoomTimeout = globalThis.window.setTimeout(() => {
           currentZoom.value = newMap.getZoom()
         }, 100)
       })
