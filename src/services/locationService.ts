@@ -1,4 +1,4 @@
-import type { LatLng, LatLngExpression } from 'leaflet'
+import type { LatLng } from 'leaflet'
 import { NocoDBService, type ListResponse } from './nocodbService'
 import type { Location } from '@/models/location'
 
@@ -105,15 +105,15 @@ export class LocationService {
       // Return a default location to prevent errors (you may want to adjust this)
       return { lat: 47.73980909820898, lng: 8.970851784462777 } as LatLng
     }
-    
+
     try {
       const [lat, lng] = geoPoint.split(';').map(Number)
-      
+
       if (isNaN(lat) || isNaN(lng)) {
         console.warn(`Invalid geoPoint format: "${geoPoint}". Expected format: "lat;lng"`)
         return { lat: 47.73980909820898, lng: 8.970851784462777 } as LatLng
       }
-      
+
       return { lat, lng } as LatLng
     } catch (error) {
       console.error('Error parsing geoPoint:', error, geoPoint)
