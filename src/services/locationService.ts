@@ -1,3 +1,4 @@
+import type { LatLng, LatLngExpression } from 'leaflet'
 import { NocoDBService, type ListResponse } from './nocodbService'
 import type { Location } from '@/models/location'
 
@@ -15,18 +16,26 @@ export class LocationService {
    * Holt alle Standorte mit optionaler Paginierung
    */
   async getAllLocations(limit?: number, offset?: number): Promise<ListResponse<Location>> {
-    return this.nocoDBService.getRecords<Location>(this.tableName, { 
-      limit, 
+    const response = await this.nocoDBService.getRecords<Location>(this.tableName, {
+      limit,
       offset,
-      viewId: 'vwavvg6u07favtq4' // ViewID aus dem cURL-Request
+      viewId: 'vwavvg6u07favtq4',
     })
+
+    for (const loc of response.list) {
+      loc.latLang = this.convertGeoPointToLatLngExpression(loc['geoLocation'] as string)
+    }
+    console.log('Fetched locations:', response)
+    return response
   }
 
   /**
    * Holt einen Standort anhand seiner ID
    */
-  async getLocationById(id: string | number) {
-    return this.nocoDBService.getRecord<Location>(this.tableName, id)
+  async getLocationById(id: string | number): Promise<Location> {
+    const result = await this.nocoDBService.getRecord(this.tableName, id)
+    const location = this.convertGeoPointToLatLngExpression(result['geoLocation'] as string)
+    return { ...result, latLang: location }
   }
 
   /**
@@ -75,17 +84,19 @@ export class LocationService {
    */
   async getLocationsByTreeId(treeId: string | number): Promise<Location[]> {
     try {
-      const response = await this.nocoDBService.getRecords<Location>(
-        this.tableName,
-        {
-          where: `(tree_id,eq,${treeId})`,
-          viewId: 'vwavvg6u07favtq4'
-        }
-      )
+      const response = await this.nocoDBService.getRecords<Location>(this.tableName, {
+        where: `(tree_id,eq,${treeId})`,
+        viewId: 'vwavvg6u07favtq4',
+      })
       return response.list
     } catch (error) {
       console.error('Fehler beim Abrufen der Standorte für Baum:', error)
       return []
     }
+  }
+
+  private convertGeoPointToLatLngExpression(geoPoint: string): LatLng {
+    const [lat, lng] = geoPoint.split(';').map(Number)
+    return { lat, lng } as LatLng
   }
 }

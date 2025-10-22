@@ -28,11 +28,11 @@
         name="OpenStreetMap"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       ></l-tile-layer>
-      
+
       <!-- Marker für jeden Standort -->
-      <l-marker 
-        v-for="location in locations" 
-        :key="location.id" 
+      <l-marker
+        v-for="location in locations"
+        :key="location.id"
         :lat-lng="[location.latitude, location.longitude]"
         @click="selectLocation(location)"
       >
@@ -50,7 +50,7 @@
         </l-popup>
       </l-marker>
     </l-map>
-    
+
     <!-- Loading-Indikator für Standorte -->
     <div v-if="isLoadingLocations" class="pins-loading-indicator">
       <div class="spinner-border text-primary" role="status">
@@ -142,12 +142,6 @@ const loadLocations = async () => {
   try {
     const response = await locationService.getAllLocations(100, 0)
     locations.value = response.list
-    
-    // Wenn Standorte vorhanden sind, zentriere die Karte auf den ersten Standort
-    if (locations.value.length > 0 && map.value?.leafletObject) {
-      const firstLocation = locations.value[0]
-      center.value = [firstLocation.latitude, firstLocation.longitude]
-    }
   } catch (error) {
     console.error('Fehler beim Laden der Standorte:', error)
   } finally {
