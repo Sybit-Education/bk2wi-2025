@@ -14,6 +14,11 @@ const hasImage = computed(() => {
 const imageUrl = computed((): string => {
   return hasImage.value ? (props.tree?.picture[0]?.signedUrl as string) : ''
 })
+
+const getLink = computed((): string => {
+  return 'tree/' + props.tree.id
+})
+
 </script>
 
 <style scoped></style>
@@ -24,6 +29,7 @@ const imageUrl = computed((): string => {
     :img-src="imageUrl"
     :img-alt="tree.name"
     :variant="hasImage ? 'image' : 'default'"
+    :href="getLink"
   >
     <div class="p-5">
       <div class="flex justify-between items-start mb-3">
