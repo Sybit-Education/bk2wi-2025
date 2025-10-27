@@ -6,7 +6,7 @@
       :center="center"
       class="map"
       crs="EPSG:4326"
-      :min-zoom="12"
+      :min-zoom="11"
       :max-zoom="18"
       :bounds="bounds"
       :max-bounds="maxBounds"
@@ -29,7 +29,10 @@
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       ></l-tile-layer>
 
-      <!-- Marker für jeden Standort -->
+      <!-- Radolfzell Grenzen (zuerst laden, damit sie unter den Markern liegen) -->
+      <l-geo-json v-if="radolfzellBoundary" :geojson="radolfzellBoundary"></l-geo-json>
+
+      <!-- Marker für jeden Standort (nach dem Polygon laden, damit sie darüber liegen) -->
       <l-marker
         v-for="location in locations"
         :key="location.id"
@@ -60,8 +63,16 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeMount, shallowRef, onBeforeUnmount, onMounted } from 'vue'
 
-import L, { latLngBounds, type PointTuple } from 'leaflet'
-import { LMap, LControlLayers, LTileLayer, LMarker, LPopup, LIcon } from '@vue-leaflet/vue-leaflet'
+import { latLngBounds, type PointTuple } from 'leaflet'
+import {
+  LMap,
+  LControlLayers,
+  LTileLayer,
+  LMarker,
+  LPopup,
+  LIcon,
+  LGeoJson,
+} from '@vue-leaflet/vue-leaflet'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
 import { FwbSpinner } from 'flowbite-vue'
@@ -72,18 +83,19 @@ const center = ref<PointTuple>([47.73980909820898, 8.970851784462777])
 
 const bounds = shallowRef(
   latLngBounds([
-    [47.797502793976825, 8.900488931092678],
-    [47.7228286935113, 9.059525095436436],
+    [47.732, 8.906],
+    [47.814, 8.969],
   ]),
 )
 const maxBounds = shallowRef(
   latLngBounds([
-    [47.8, 8.9],
-    [47.7, 9.159],
+    [47.71, 8.9],
+    [47.87, 9.1],
   ]),
 )
 
 const mapInitialized = ref(false)
+const radolfzellBoundary = ref<GeoJSON.FeatureCollection | null>(null)
 
 const mapOptions = ref({
   zoomSnap: 0.5,
@@ -122,6 +134,16 @@ const locations = ref<Location[]>([])
 const isLoadingLocations = ref(false)
 const selectedLocation = ref<Location | null>(null)
 
+// Lade Radolfzell GeoJSON
+const loadRadolfzellBoundary = async () => {
+  try {
+    const response = await fetch('/radolfzell.geojson')
+    radolfzellBoundary.value = await response.json()
+  } catch (error) {
+    console.error('Fehler beim Laden der Radolfzell-Grenzen:', error)
+  }
+}
+
 // Lade Standorte
 const loadLocations = async () => {
   isLoadingLocations.value = true
@@ -153,36 +175,12 @@ onBeforeMount(() => {
 // Lade Standorte, wenn die Komponente gemountet wird
 onMounted(() => {
   loadLocations()
+  loadRadolfzellBoundary()
 })
 
 // Verwende eine debounced Funktion für mapLoaded mit defineAsyncComponent für bessere Performance
 const mapLoaded = () => {
   mapInitialized.value = true
-
-  // Optimiere die Leaflet-Karte für bessere Performance
-  if (map.value?.leafletObject) {
-    // Deaktiviere automatisches Zoomen während des Ladens
-    map.value.leafletObject.options.trackResize = false
-
-    // Reduziere die Anzahl der Neuberechnungen
-    map.value.leafletObject.options.renderer = L.canvas({
-      padding: 0.5,
-      tolerance: 5, // Erhöhte Toleranz für bessere Performance
-    }) as unknown
-
-    // Aktiviere Hardwarebeschleunigung, wenn verfügbar
-    if (map.value.leafletObject._container) {
-      map.value.leafletObject._container.style.transform = 'translateZ(0)'
-
-      // Optimiere DOM-Rendering
-      map.value.leafletObject._container.style.willChange = 'transform'
-      map.value.leafletObject._container.style.backfaceVisibility = 'hidden'
-    }
-
-    // Optimiere Leaflet-Events
-    map.value.leafletObject.options.zoomSnap = 0.5
-    map.value.leafletObject.options.wheelPxPerZoomLevel = 60
-  }
 }
 
 // Computed-Wert für den aktuellen Zoom-Level
@@ -229,18 +227,6 @@ const updateMaxBoundsTimeout = ref<number | null>(null)
 <style lang="scss">
 @import 'leaflet/dist/leaflet.css';
 
-.leaflet-top {
-  top: calc(5rem + env(safe-area-inset-top));
-}
-.leaflet-left {
-  left: env(safe-area-inset-left);
-}
-.leaflet-right {
-  right: env(safe-area-inset-right);
-}
-.leaflet-bottom {
-  bottom: env(safe-area-inset-bottom);
-}
 .leaflet-control-attribution {
   max-width: calc(100vw - 8.5rem);
   font-size: 0.75rem;
@@ -255,7 +241,7 @@ const updateMaxBoundsTimeout = ref<number | null>(null)
 
   &:hover {
     transform: scale(1.5) translate3d(0, 0, 0);
-    filter: drop-shadow(0px 0px 10px rgba(210, 28, 28, 0.75));
+    filter: drop-shadow(0px 0px 10px rgba(85, 43, 222, 0.852));
   }
 }
 
@@ -267,16 +253,6 @@ const updateMaxBoundsTimeout = ref<number | null>(null)
 .marker-selected:hover {
   transform: scale(1.5) translate3d(0, 0, 0);
   filter: drop-shadow(0px 0px 10px rgba(210, 28, 28, 0.75));
-}
-
-.marker-state-planned {
-  filter: grayscale(90%) opacity(0.5);
-}
-.marker-state-under-construction {
-  filter: grayscale(80%) opacity(0.9);
-}
-.marker-state-finished {
-  filter: opacity(1);
 }
 
 .map {
@@ -344,5 +320,17 @@ const updateMaxBoundsTimeout = ref<number | null>(null)
 }
 .leaflet-zoom-anim .leaflet-zoom-animated {
   will-change: transform;
+}
+
+/* Stil für die Radolfzell-Grenzen */
+.radolfzell-boundary {
+  fill-rule: evenodd;
+}
+
+/* Stil für den abgedunkelten Bereich außerhalb von Radolfzell */
+.outside-boundary {
+  fill: #000;
+  fill-opacity: 0.35;
+  pointer-events: none;
 }
 </style>

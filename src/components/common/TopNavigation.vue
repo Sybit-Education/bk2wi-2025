@@ -51,7 +51,7 @@ function toggleMenu() {
           id="navbar-default"
         >
           <ul
-            class="font-medium flex flex-col md:p-0 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0"
+            class="font-medium flex flex-col md:p-0 mt-4 ml-8 md:flex-row md:space-x-18 rtl:space-x-reverse md:mt-1"
           >
             <li>
               <a
