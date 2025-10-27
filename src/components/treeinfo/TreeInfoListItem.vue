@@ -21,7 +21,7 @@ const getLink = computed((): string => {
 
 </script>
 
-<style scoped></style>
+
 
 <template>
   <fwb-card
@@ -30,6 +30,7 @@ const getLink = computed((): string => {
     :img-alt="tree.name"
     :variant="hasImage ? 'image' : 'default'"
     :href="getLink"
+
   >
     <div class="p-5">
       <div class="flex justify-between items-start mb-3">
@@ -42,3 +43,13 @@ const getLink = computed((): string => {
     </div>
   </fwb-card>
 </template>
+
+<style scoped>
+/* scoped-Override: zielt auf das interne <img> der fwb-card-Instanz (temp fix) */
+.tree-info-item ::v-deep img {
+  padding: 0;
+  margin: 0;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+</style>
