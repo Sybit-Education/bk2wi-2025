@@ -4,7 +4,7 @@ import type { Picture } from "./picture";
  * Interface für die Daten in der User Tabelle
  */
 export interface UserInfo {
-  id?: string | number;
+  id: string | number;
   username: string;
   email: string;
   password: string;
