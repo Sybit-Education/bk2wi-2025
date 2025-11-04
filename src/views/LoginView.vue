@@ -16,7 +16,6 @@ const loading = ref(false)
 const handleLogin = async (event: Event) => {
   try {
     event.preventDefault()
-    console.log('Login button clicked') // Debug-Ausgabe
     loading.value = true
     errorMessage.value = ''
 
