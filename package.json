@@ -16,7 +16,8 @@
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "generate-password": "node --experimental-modules scripts/generate-password-hash.js"
   },
   "dependencies": {
     "@vue-leaflet/vue-leaflet": "^0.10.1",
