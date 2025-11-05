@@ -73,7 +73,7 @@ export class UserInfoService {
         this.tableName,
         userInfo,
       )
-      return createdUser
+      return createdUser || null
     } catch (error) {
       console.error('Fehler beim Erstellen des Benutzers:', error)
       return null
@@ -104,7 +104,7 @@ export class UserInfoService {
         this.tableName,
         userInfo,
       )
-      return updatedUser
+      return updatedUser || null
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Benutzers:', error)
       return null

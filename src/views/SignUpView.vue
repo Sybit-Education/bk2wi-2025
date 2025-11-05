@@ -40,7 +40,7 @@ const handleSignUp = async (event: Event) => {
     }
 
     // Benutzer erstellen
-    const newUser: UserInfo = {
+    const newUser = {
       username: username.value,
       email: email.value,
       password: password.value,

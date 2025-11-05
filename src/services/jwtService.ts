@@ -173,7 +173,9 @@ export class JwtService {
       window.crypto.getRandomValues(randomValues)
       
       for (let i = 0; i < length; i++) {
-        result += charset[randomValues[i] % charset.length]
+        // Ensure the index is within bounds
+        const index = randomValues[i] !== undefined ? randomValues[i] % charset.length : Math.floor(Math.random() * charset.length);
+        result += charset[index];
       }
     } else {
       // Fallback für ältere Browser (weniger sicher)
