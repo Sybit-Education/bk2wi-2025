@@ -1,10 +1,9 @@
-import jwt from 'jsonwebtoken'
+import { jwtDecode } from 'jwt-decode'
 import type { UserInfo } from '@/models/userInfo'
 
-// Sicherheitsrelevante Konfiguration
-const JWT_SECRET = import.meta.env.VITE_JWT_SECRET || 'your-secret-key-change-in-production'
-const JWT_EXPIRES_IN = '15m' // Token läuft nach 15 Minuten ab
-const REFRESH_TOKEN_EXPIRES_IN = '7d' // Refresh-Token läuft nach 7 Tagen ab
+// Konfiguration für Token-Lebensdauer
+const ACCESS_TOKEN_EXPIRES_IN = 15 * 60 * 1000 // 15 Minuten in Millisekunden
+const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000 // 7 Tage in Millisekunden
 
 export interface JwtPayload {
   userId: string | number
@@ -21,11 +20,15 @@ export interface TokenResponse {
 }
 
 /**
- * Service für die Verwaltung von JWT-Tokens
+ * Service für die Verwaltung von JWT-Tokens (Browser-kompatible Version)
+ * 
+ * Hinweis: Da wir im Browser sind, können wir keine echten JWT-Tokens signieren.
+ * Diese Implementierung simuliert die Token-Generierung für Demonstrationszwecke.
+ * In einer Produktionsumgebung sollte die Token-Generierung auf dem Server erfolgen.
  */
 export class JwtService {
   /**
-   * Generiert ein JWT-Token für einen Benutzer
+   * Generiert ein simuliertes JWT-Token für einen Benutzer
    * @param user Der Benutzer, für den das Token generiert werden soll
    * @returns Das generierte Token und Refresh-Token
    */
@@ -34,29 +37,34 @@ export class JwtService {
       throw new Error('Benutzer-ID ist erforderlich für die Token-Generierung')
     }
 
-    const payload: JwtPayload = {
+    const now = Date.now()
+    const accessTokenExpiry = now + ACCESS_TOKEN_EXPIRES_IN
+    const refreshTokenExpiry = now + REFRESH_TOKEN_EXPIRES_IN
+
+    // Payload für Access Token
+    const accessPayload = {
       userId: user.id,
       username: user.username,
       email: user.email,
+      iat: Math.floor(now / 1000),
+      exp: Math.floor(accessTokenExpiry / 1000)
     }
 
-    // Access Token generieren
-    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
-    
-    // Refresh Token generieren
-    const refreshToken = jwt.sign(
-      { userId: user.id },
-      JWT_SECRET,
-      { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
-    )
+    // Payload für Refresh Token
+    const refreshPayload = {
+      userId: user.id,
+      iat: Math.floor(now / 1000),
+      exp: Math.floor(refreshTokenExpiry / 1000)
+    }
 
-    // Ablaufzeit berechnen (in Sekunden)
-    const expiresIn = this.getExpirationTime(accessToken)
+    // Token als Base64-kodierte JSON-Strings (simuliert)
+    const accessToken = this.encodeToken(accessPayload)
+    const refreshToken = this.encodeToken(refreshPayload)
 
     return {
       accessToken,
       refreshToken,
-      expiresIn,
+      expiresIn: Math.floor((accessTokenExpiry - now) / 1000)
     }
   }
 
@@ -67,7 +75,15 @@ export class JwtService {
    */
   verifyToken(token: string): JwtPayload | null {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload
+      const decoded = jwtDecode<JwtPayload>(token)
+      
+      // Prüfen, ob das Token abgelaufen ist
+      const now = Math.floor(Date.now() / 1000)
+      if (decoded.exp && decoded.exp < now) {
+        console.warn('Token ist abgelaufen')
+        return null
+      }
+      
       return decoded
     } catch (error) {
       console.error('Token-Verifizierungsfehler:', error)
@@ -82,23 +98,27 @@ export class JwtService {
    */
   refreshAccessToken(refreshToken: string): { accessToken: string; expiresIn: number } | null {
     try {
-      const decoded = jwt.verify(refreshToken, JWT_SECRET) as { userId: string | number }
+      const decoded = this.verifyToken(refreshToken)
       
       if (!decoded || !decoded.userId) {
         return null
       }
 
+      const now = Date.now()
+      const accessTokenExpiry = now + ACCESS_TOKEN_EXPIRES_IN
+
       // Neues Access-Token generieren
-      const payload: Partial<JwtPayload> = {
+      const accessPayload = {
         userId: decoded.userId,
+        iat: Math.floor(now / 1000),
+        exp: Math.floor(accessTokenExpiry / 1000)
       }
 
-      const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
-      const expiresIn = this.getExpirationTime(accessToken)
+      const accessToken = this.encodeToken(accessPayload)
 
       return {
         accessToken,
-        expiresIn,
+        expiresIn: Math.floor(ACCESS_TOKEN_EXPIRES_IN / 1000)
       }
     } catch (error) {
       console.error('Token-Refresh-Fehler:', error)
@@ -107,17 +127,29 @@ export class JwtService {
   }
 
   /**
-   * Berechnet die Ablaufzeit eines Tokens in Sekunden
-   * @param token Das Token
-   * @returns Die Ablaufzeit in Sekunden
+   * Dekodiert ein Token ohne Validierung
+   * @param token Das zu dekodierende Token
+   * @returns Die dekodierten Token-Daten
    */
-  private getExpirationTime(token: string): number {
-    const decoded = jwt.decode(token) as { exp?: number }
-    if (!decoded || !decoded.exp) {
-      return 0
-    }
+  decodeToken<T>(token: string): T {
+    return jwtDecode<T>(token)
+  }
+
+  /**
+   * Kodiert ein Objekt als simuliertes JWT-Token
+   * @param payload Die zu kodierende Payload
+   * @returns Das kodierte Token
+   */
+  private encodeToken(payload: Record<string, any>): string {
+    // Simuliert ein JWT-Token durch Base64-Kodierung der Payload
+    // In einer echten Implementierung würde hier eine Signatur hinzugefügt
+    const header = { alg: 'HS256', typ: 'JWT' }
+    const encodedHeader = btoa(JSON.stringify(header))
+    const encodedPayload = btoa(JSON.stringify(payload))
     
-    // Ablaufzeit in Sekunden (ab jetzt)
-    return decoded.exp - Math.floor(Date.now() / 1000)
+    // Simulierte Signatur (in einer echten Implementierung würde hier eine kryptografische Signatur stehen)
+    const signature = btoa('simulated-signature')
+    
+    return `${encodedHeader}.${encodedPayload}.${signature}`
   }
 }

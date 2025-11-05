@@ -57,6 +57,8 @@ export class ApiClient {
           
           try {
             // Versuchen, das Token zu erneuern
+            // Wir müssen den Store dynamisch importieren, um zirkuläre Abhängigkeiten zu vermeiden
+            const { useAuthStore } = await import('@/stores/authStore')
             const authStore = useAuthStore()
             const refreshed = await authStore.refreshTokens()
             
