@@ -18,15 +18,15 @@ async function loadTree(treeId: string) {
 
   try {
     const response = await treeInfoService.getTreeById(treeId)
-    tree = response
+    tree.value = response
   } catch (err) {
     console.error('Fehler beim Laden der Bäume:', err)
     error.value =
       'Die Baumdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
   } finally {
     loading.value = false
-      console.log('Ladide Baum mit ID:', )
-      console.log('Baumdaten:', tree.picture.url)
+      console.log('Lade Baum mit ID:', treeId)
+      console.log('Baumdaten:', tree?.picture)
   }
 }
 
@@ -43,11 +43,11 @@ watch(
   }
 )
 const hasImage = computed(() => {
-  return tree.picture && tree.picture.length > 0 && tree.picture[0]?.signedUrl
+  return tree.value?.picture && tree.value.picture.length > 0 && tree.value.picture[0]?.signedUrl
 })
 
 const imageUrl = computed((): string => {
-  return hasImage.value ? (tree?.picture[0]?.signedUrl as string) : ''
+  return hasImage.value ? (tree.value?.picture[0]?.signedUrl as string) : ''
 })
 
 </script>
@@ -66,7 +66,7 @@ const imageUrl = computed((): string => {
       <h1 class="text-4xl font-bold text-gray-800 mb-8 md:m-y-4 md:mb-4">Über {{ tree.name }}</h1>
 
       <div class="md:flex md:flex-row space-x-8">
-        <img :src="imageUrl" :alt="tree.name" class="mt-4 md:max-w-md  h-auto rounded-lg shadow-lg" />
+        <img v-if="hasImage" :src="imageUrl" :alt="tree.name" class="mt-4 md:max-w-md h-auto rounded-lg shadow-lg" />
         <p class="mt-10 md:mt-2 text-lg text-gray-700 text-justify whitespace-pre-line">{{ tree.description }}</p>
       </div>
 
