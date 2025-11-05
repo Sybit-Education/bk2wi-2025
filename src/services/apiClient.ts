@@ -24,6 +24,55 @@ export class ApiClient {
         'xc-token': config.apiKey, // NocoDB v2 API verwendet 'xc-token' statt 'xc-auth'
       },
     })
+    
+    // Request Interceptor für JWT-Token
+    this.client.interceptors.request.use(
+      (config) => {
+        // Token aus dem localStorage holen
+        const token = localStorage.getItem('auth_token')
+        
+        // Wenn Token vorhanden, zu den Headers hinzufügen
+        if (token && config.headers) {
+          config.headers['Authorization'] = `Bearer ${token}`
+        }
+        
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      }
+    )
+    
+    // Response Interceptor für Token-Refresh
+    this.client.interceptors.response.use(
+      (response) => {
+        return response
+      },
+      async (error) => {
+        const originalRequest = error.config
+        
+        // Wenn der Fehler 401 (Unauthorized) ist und es noch kein Retry gab
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true
+          
+          try {
+            // Versuchen, das Token zu erneuern
+            const authStore = useAuthStore()
+            const refreshed = await authStore.refreshTokens()
+            
+            if (refreshed) {
+              // Token wurde erneuert, Anfrage wiederholen
+              originalRequest.headers['Authorization'] = `Bearer ${authStore.accessToken}`
+              return this.client(originalRequest)
+            }
+          } catch (refreshError) {
+            console.error('Token-Refresh fehlgeschlagen:', refreshError)
+          }
+        }
+        
+        return Promise.reject(error)
+      }
+    )
   }
 
   /**

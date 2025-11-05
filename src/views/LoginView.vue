@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { UserInfoService } from '../services/userInfoService'
 import PasswordInput from '../components/common/PasswordInput.vue'
+import { useAuthStore } from '@/stores/authStore'
 
-const userInfoService = new UserInfoService()
-
+const authStore = useAuthStore()
 const router = useRouter()
 
 const email = ref('')
@@ -20,20 +19,17 @@ const handleLogin = async (event: Event) => {
     loading.value = true
     errorMessage.value = ''
 
-    const user = await userInfoService.loginUser(email.value, password.value)
-    loading.value = false
+    const success = await authStore.login(email.value, password.value)
 
-    if (user) {
+    if (success) {
       // Erfolgreiche Anmeldung
-      localStorage.setItem('loggedIn', 'true')
-      localStorage.setItem('user', JSON.stringify(user))
       if (rememberMe.value) {
         localStorage.setItem('rememberMe', 'true')
       }
       router.push({ name: 'home' })
     } else {
       // Ungültige Anmeldeinformationen
-      errorMessage.value = 'Ungültige Anmeldedaten, bitte versuchen Sie es erneut!'
+      errorMessage.value = authStore.error || 'Ungültige Anmeldedaten, bitte versuchen Sie es erneut!'
     }
   } catch (error) {
     console.error('Fehler bei der Anmeldung:', error)
@@ -42,7 +38,6 @@ const handleLogin = async (event: Event) => {
     loading.value = false
   }
 }
-
 </script>
 
 <template>
