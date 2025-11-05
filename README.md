@@ -2,6 +2,16 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+## Passwort-Verschlüsselung
+
+Das Projekt verwendet bcrypt für die sichere Verschlüsselung von Passwörtern. Um ein Passwort-Hash für Testzwecke zu generieren, kann folgender Befehl verwendet werden:
+
+```sh
+npm run generate-password -- MeinPasswort123
+```
+
+Dies erzeugt einen Hash, der mit dem in der Anwendung verwendeten Algorithmus kompatibel ist.
+
 ## Recommended IDE Setup
 
 [VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
@@ -55,4 +65,10 @@ npm run build
 
 ```sh
 npm run lint
+```
+
+### Generate Password Hash for Testing
+
+```sh
+npm run generate-password -- YourPassword
 ```
