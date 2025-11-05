@@ -145,7 +145,7 @@ export class JwtService {
    * @param payload Die zu kodierende Payload
    * @returns Das kodierte Token
    */
-  private encodeToken(payload: Record<string, any>): string {
+  private encodeToken(payload: Record<string, unknown>): string {
     // Simuliert ein JWT-Token durch Base64-Kodierung der Payload
     // In einer echten Implementierung würde hier eine Signatur hinzugefügt
     const header = { alg: 'HS256', typ: 'JWT' }
