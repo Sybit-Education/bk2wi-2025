@@ -1,6 +1,5 @@
-import { NocoDBService, type ListResponse } from './nocodbService'
+import { NocoDBService } from './nocodbService'
 import type { UserInfo } from '@/models/userInfo'
-import type { Picture } from '@/models/picture'
 import { hashPassword, verifyPassword } from '@/utils/passwordUtils'
 
 /**
