@@ -11,7 +11,7 @@ interface Props {
   autocomplete?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   id: 'password',
   name: 'password',
   placeholder: '',
