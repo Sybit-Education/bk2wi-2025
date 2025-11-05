@@ -8,7 +8,7 @@ const route = useRoute()
 
 
 const treeInfoService = new TreeInfoService()
-let tree: TreeInfo
+const tree = ref<TreeInfo | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
