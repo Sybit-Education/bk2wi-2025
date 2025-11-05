@@ -38,6 +38,22 @@ const router = createRouter({
         hideLayout: true
       }
     },
+    {
+      path: '/signin',
+      name: 'signin',
+      component: () => import('../views/SignInView.vue'),
+      meta: {
+        hideLayout: true
+      }
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: () => import('../views/SignUpView.vue'),
+      meta: {
+        hideLayout: true
+      }
+    },
   ],
 })
 
