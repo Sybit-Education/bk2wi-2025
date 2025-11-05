@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { UserInfoService } from '../services/userInfoService'
+import PasswordInput from '../components/common/PasswordInput.vue'
 
 const userInfoService = new UserInfoService()
 
@@ -56,8 +57,14 @@ const handleLogin = async (event: Event) => {
                     <input type="email" name="email" id="email" v-model="email" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="true">
                 </div>
                 <div>
-                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Passwort</label>
-                    <input type="password" name="password" id="password" v-model="password" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="true">
+                    <PasswordInput 
+                      v-model="password"
+                      id="password"
+                      name="password"
+                      label="Passwort"
+                      :required="true"
+                      autocomplete="current-password"
+                    />
                 </div>
                 <div>
                     <p v-if="errorMessage" class="text-sm text-red-600 mx-auto max-w-fit">{{ errorMessage }}</p>
