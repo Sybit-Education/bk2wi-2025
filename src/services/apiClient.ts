@@ -30,10 +30,16 @@ export class ApiClient {
       (config) => {
         // Token aus dem localStorage holen
         const token = localStorage.getItem('auth_token')
+        const csrfToken = localStorage.getItem('csrf_token')
         
         // Wenn Token vorhanden, zu den Headers hinzufügen
         if (token && config.headers) {
           config.headers['Authorization'] = `Bearer ${token}`
+        }
+        
+        // CSRF-Token für nicht-GET-Anfragen hinzufügen
+        if (csrfToken && config.headers && config.method && config.method.toUpperCase() !== 'GET') {
+          config.headers['X-CSRF-Token'] = csrfToken
         }
         
         return config

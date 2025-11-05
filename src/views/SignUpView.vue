@@ -32,9 +32,10 @@ const handleSignUp = async (event: Event) => {
       return
     }
 
-    // Minimale Passwortanforderungen prüfen
-    if (password.value.length < 8) {
-      errorMessage.value = 'Das Passwort muss mindestens 8 Zeichen lang sein.'
+    // Passwortanforderungen prüfen
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    if (!passwordRegex.test(password.value)) {
+      errorMessage.value = 'Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.'
       return
     }
 

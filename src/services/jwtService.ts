@@ -17,6 +17,7 @@ export interface TokenResponse {
   accessToken: string
   refreshToken: string
   expiresIn: number
+  csrfToken: string  // CSRF-Token für Formular-Übermittlungen
 }
 
 /**
@@ -61,10 +62,14 @@ export class JwtService {
     const accessToken = this.encodeToken(accessPayload)
     const refreshToken = this.encodeToken(refreshPayload)
 
+    // CSRF-Token generieren
+    const csrfToken = this.generateRandomToken(32)
+    
     return {
       accessToken,
       refreshToken,
-      expiresIn: Math.floor((accessTokenExpiry - now) / 1000)
+      expiresIn: Math.floor((accessTokenExpiry - now) / 1000),
+      csrfToken
     }
   }
 
@@ -151,5 +156,32 @@ export class JwtService {
     const signature = btoa('simulated-signature')
     
     return `${encodedHeader}.${encodedPayload}.${signature}`
+  }
+  
+  /**
+   * Generiert ein zufälliges Token für CSRF-Schutz
+   * @param length Die Länge des Tokens
+   * @returns Das generierte Token
+   */
+  private generateRandomToken(length: number): string {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let result = ''
+    const randomValues = new Uint8Array(length)
+    
+    // Sichere Zufallszahlen generieren, wenn verfügbar
+    if (window.crypto && window.crypto.getRandomValues) {
+      window.crypto.getRandomValues(randomValues)
+      
+      for (let i = 0; i < length; i++) {
+        result += charset[randomValues[i] % charset.length]
+      }
+    } else {
+      // Fallback für ältere Browser (weniger sicher)
+      for (let i = 0; i < length; i++) {
+        result += charset[Math.floor(Math.random() * charset.length)]
+      }
+    }
+    
+    return result
   }
 }

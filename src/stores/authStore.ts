@@ -15,6 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
   // State
   const accessToken = ref<string | null>(localStorage.getItem(TOKEN_KEY))
   const refreshToken = ref<string | null>(localStorage.getItem(REFRESH_TOKEN_KEY))
+  const csrfToken = ref<string | null>(localStorage.getItem('csrf_token'))
   const user = ref<UserInfo | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -52,12 +53,23 @@ export const useAuthStore = defineStore('auth', () => {
       // Token und Benutzer speichern
       accessToken.value = tokens.accessToken
       refreshToken.value = tokens.refreshToken
+      csrfToken.value = tokens.csrfToken
       user.value = loggedInUser
       
-      // Im localStorage speichern
+      // CSRF-Token im localStorage speichern
+      localStorage.setItem('csrf_token', tokens.csrfToken)
+      
+      // Im localStorage speichern - nur notwendige Informationen, keine sensiblen Daten
       localStorage.setItem(TOKEN_KEY, tokens.accessToken)
       localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken)
-      localStorage.setItem(USER_KEY, JSON.stringify(loggedInUser))
+      
+      // Nur nicht-sensible Benutzerdaten speichern
+      const safeUserData = {
+        id: loggedInUser.id,
+        username: loggedInUser.username,
+        email: loggedInUser.email
+      }
+      localStorage.setItem(USER_KEY, JSON.stringify(safeUserData))
       
       return true
     } catch (e) {
@@ -73,12 +85,14 @@ export const useAuthStore = defineStore('auth', () => {
     // Token und Benutzer entfernen
     accessToken.value = null
     refreshToken.value = null
+    csrfToken.value = null
     user.value = null
     
     // Aus dem localStorage entfernen
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(REFRESH_TOKEN_KEY)
     localStorage.removeItem(USER_KEY)
+    localStorage.removeItem('csrf_token')
   }
   
   async function refreshTokens(): Promise<boolean> {
@@ -123,6 +137,7 @@ export const useAuthStore = defineStore('auth', () => {
   
   return {
     accessToken,
+    csrfToken,
     user,
     loading,
     error,
