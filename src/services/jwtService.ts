@@ -174,7 +174,8 @@ export class JwtService {
       
       for (let i = 0; i < length; i++) {
         // Ensure the index is within bounds
-        const index = randomValues[i] !== undefined ? randomValues[i] % charset.length : Math.floor(Math.random() * charset.length);
+        const randomValue = randomValues[i];
+        const index = randomValue !== undefined ? randomValue % charset.length : Math.floor(Math.random() * charset.length);
         result += charset[index];
       }
     } else {
