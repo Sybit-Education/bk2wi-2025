@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { UserInfoService } from '@/services/userInfoService'
 import PasswordInput from '@/components/common/PasswordInput.vue'
+import type { UserInfo } from '@/models/userInfo'
 
 const userService = new UserInfoService()
 const router = useRouter()
