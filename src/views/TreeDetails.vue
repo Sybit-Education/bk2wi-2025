@@ -6,7 +6,6 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
-
 const treeInfoService = new TreeInfoService()
 const tree = ref<TreeInfo | null>(null)
 const loading = ref(true)
@@ -25,8 +24,7 @@ async function loadTree(treeId: string) {
       'Die Baumdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
   } finally {
     loading.value = false
-      console.log('Lade Baum mit ID:', treeId)
-      console.log('Baumdaten:', tree.value?.picture)
+    console.log('Lade Baum mit ID:', treeId)
   }
 }
 
@@ -35,12 +33,11 @@ onMounted(() => {
   loadTree(id)
 })
 
-
 watch(
   () => route.params.id,
   (newId) => {
     if (typeof newId === 'string') loadTree(newId)
-  }
+  },
 )
 const hasImage = computed(() => {
   return tree.value?.picture && tree.value.picture.length > 0 && tree.value.picture[0]?.signedUrl
@@ -49,27 +46,33 @@ const hasImage = computed(() => {
 const imageUrl = computed((): string => {
   return hasImage.value ? (tree.value?.picture[0]?.signedUrl as string) : ''
 })
-
 </script>
 
 <template>
-  <main>
-    <div v-if="loading">
-      <p>Lade Baumdaten...</p>
+  <div v-if="loading">
+    <p>Lade Baumdaten...</p>
+  </div>
+
+  <div v-else-if="error">
+    <p class="text-red-500">{{ error }}</p>
+  </div>
+
+  <div v-else-if="tree">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8 md:m-y-4 md:mb-4">{{ tree.name }}</h1>
+
+    <div class="md:flex md:flex-row space-x-8">
+      <img
+        v-if="hasImage"
+        :src="imageUrl"
+        :alt="tree.name"
+        class="mt-4 md:max-w-md h-auto rounded-lg shadow-lg"
+      />
+      <p class="mt-10 md:mt-2 text-xl text-gray-700 font-bold text-justify whitespace-pre-line">
+        {{ tree.abstract }}
+      </p>
     </div>
-
-    <div v-else-if="error">
-      <p class="text-red-500">{{ error }}</p>
-    </div>
-
-    <div v-else-if="tree">
-      <h1 class="text-4xl font-bold text-gray-800 mb-8 md:m-y-4 md:mb-4">Über {{ tree.name }}</h1>
-
-      <div class="md:flex md:flex-row space-x-8">
-        <img v-if="hasImage" :src="imageUrl" :alt="tree.name" class="mt-4 md:max-w-md h-auto rounded-lg shadow-lg" />
-        <p class="mt-10 md:mt-2 text-lg text-gray-700 text-justify whitespace-pre-line">{{ tree.description }}</p>
-      </div>
-
-    </div>
-  </main>
+    <p class="mt-10 md:mt-2 text-lg text-gray-700 text-justify whitespace-pre-line">
+      {{ tree.description }}
+    </p>
+  </div>
 </template>
