@@ -26,7 +26,7 @@ async function loadTree(treeId: string) {
   } finally {
     loading.value = false
       console.log('Ladide Baum mit ID:', )
-      console.log('Baumdaten:', tree.picture.url)
+      console.log('Baumdaten:', tree)
   }
 }
 
