@@ -30,14 +30,14 @@ function handleLogout() {
         <div class="flex items-center ml-auto md:order-2">
           <div class="hidden md:flex md:space-x-2 mr-4">
             <template v-if="!authStore.isAuthenticated">
-              <router-link 
-                to="/login" 
+              <router-link
+                to="/login"
                 class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Anmelden
               </router-link>
-              <router-link 
-                to="/signup" 
+              <router-link
+                to="/signup"
                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               >
                 Registrieren
@@ -45,7 +45,7 @@ function handleLogout() {
             </template>
             <template v-else>
               <span class="text-gray-900 dark:text-white mr-2">Hallo, {{ authStore.username }}</span>
-              <button 
+              <button
                 @click="handleLogout"
                 class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
               >
@@ -85,7 +85,7 @@ function handleLogout() {
           id="navbar-default"
         >
           <ul
-            class="font-medium flex flex-col md:p-0 mt-4 ml-8 md:flex-row md:space-x-18 rtl:space-x-reverse md:mt-1"
+            class="font-medium flex flex-col md:p-0 mt-4 ml-8 md:flex-row md:space-x-10 rtl:space-x-reverse md:mt-1"
           >
             <li>
               <a
