@@ -14,7 +14,7 @@ const hideLayout = computed(() => route.meta.hideLayout === true)
   <header v-if="!hideLayout">
     <TopNavigation class="top-0 left-0 z-500 flex w-full" />
   </header>
-  <main class="container mx-auto px-4 py-8 mt-16">
+  <main class="container mx-auto px-4">
     <RouterView />
   </main>
   <footer v-if="!hideLayout" class="bg-gray-100 py-4 mt-8">
