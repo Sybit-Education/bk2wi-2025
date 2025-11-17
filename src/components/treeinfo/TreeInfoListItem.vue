@@ -25,7 +25,7 @@ const getLink = computed((): string => {
 
 <template>
   <fwb-card
-    class="tree-info-item w-sd hover:shadow-md transition-shadow bg-white rounded-lg overflow-hidden"
+    class="tree-info-item w-sd hover:shadow-md transition-shadow bg-white rounded-lg overflow-hidden p-0"
     :img-src="imageUrl"
     :img-alt="tree.name"
     :variant="hasImage ? 'image' : 'default'"

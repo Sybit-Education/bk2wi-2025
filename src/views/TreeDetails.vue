@@ -24,7 +24,8 @@ async function loadTree(treeId: string) {
       'Die Baumdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
   } finally {
     loading.value = false
-    console.log('Lade Baum mit ID:', treeId)
+      console.log('Ladide Baum mit ID:', )
+      console.log('Baumdaten:', tree)
   }
 }
 
