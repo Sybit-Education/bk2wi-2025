@@ -61,11 +61,11 @@ const imageUrl = computed((): string => {
   <div v-else-if="tree" class="mx-5 md:mx-10">
       <h1 class="text-4xl font-bold text-gray-800 mb-8 mt-6 md:mb-4">Über {{ tree.name }}</h1>
 
-    <div class="md:flex md:flex-row space-x-8">
+    <div class="space-x-8">
       <img
         :src="imageUrl"
         :alt="tree.name"
-        class="mt-4 md:max-w-md  h-full rounded-lg shadow-lg w-auto " />
+        class="mt-4 md:max-w-md  h-full rounded-lg shadow-lg w-auto md:float-left md:mb-8" />
       <p class="mt-10 md:mt-2 text-xl text-gray-700 text-justify whitespace-pre-line">
         {{ tree.description }}
       </p>
