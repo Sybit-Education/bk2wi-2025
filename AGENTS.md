@@ -9,7 +9,7 @@ Erstelle eine moderne Single-Page-Application mit folgenden Technologien:
 - **Vite** als Build-Tool
 - **Vue Router** (Version 4.2+) für das Routing
 - **Pinia** (Version 2.1+) für State Management
-- **Boostrap-vue-next** für das Styling und Komponenten
+- **Glowbite-vue** für das Styling und Komponenten
 - **NocoDB** als Backend-Persistenzlösung
 - **Vitest** für Unit-Tests
 - **Cypress** für E2E-Tests
@@ -123,7 +123,7 @@ Implementiere eine klare Trennung zwischen UI und Datenquellen durch eine dedizi
 
 1. Erstelle ein neues Projekt mit Vue CLI oder Vite
 2. Konfiguriere TypeScript mit strikten Optionen
-3. Installiere und konfiguriere Boostrap-vue-next
+3. Installiere und konfiguriere flowbite-vue
 4. Richte Vue Router und Pinia ein
 5. Konfiguriere ESLint und Prettier
 6. Erstelle die grundlegende Projektstruktur

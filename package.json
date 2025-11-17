@@ -16,13 +16,16 @@
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "generate-password": "node --experimental-modules scripts/generate-password-hash.js"
   },
   "dependencies": {
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "axios": "^1.11.0",
+    "bcryptjs": "^3.0.3",
     "flowbite": "^3.1.2",
     "flowbite-vue": "^0.2.2",
+    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet.path.drag": "^0.0.6",
     "pinia": "^3.0.3",
@@ -35,6 +38,8 @@
     "@tailwindcss/postcss": "^4.1.16",
     "@tailwindcss/vite": "^4.1.14",
     "@tsconfig/node22": "^22.0.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jwt-decode": "^2.2.1",
     "@types/leaflet": "^1.9.19",
     "@types/node": "^24.10.0",
     "@vitejs/plugin-vue": "^6.0.1",

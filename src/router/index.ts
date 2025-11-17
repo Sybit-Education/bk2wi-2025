@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,7 +31,53 @@ const router = createRouter({
       name: 'map',
       component: () => import('../views/MapView.vue'),
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+      meta: {
+        //hideLayout: true
+      },
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: () => import('../views/SignUpView.vue'),
+      meta: {
+        //hideLayout: true
+      },
+    },
   ],
+})
+
+// Navigation Guard für geschützte Routen
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+
+  // Wenn die Route keine Authentifizierung erfordert, weiter zur Route
+  if (!requiresAuth) {
+    return next()
+  }
+
+  // Prüfen, ob der Benutzer authentifiziert ist
+  const isAuthenticated = authStore.isAuthenticated
+
+  // Wenn nicht authentifiziert, zur Login-Seite umleiten
+  if (!isAuthenticated) {
+    // Token überprüfen und ggf. erneuern
+    const tokenValid = await authStore.checkAndRefreshToken()
+
+    if (!tokenValid) {
+      return next({
+        path: '/login',
+        query: { redirect: to.fullPath },
+      })
+    }
+  }
+
+  // Benutzer ist authentifiziert, weiter zur Route
+  next()
 })
 
 export default router
