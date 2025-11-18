@@ -29,7 +29,7 @@ const getLink = computed((): string => {
     :href="getLink"
   >
     <div class="p-5">
-      <h3 class="text-xl font-semibold text-gray-800">{{ tree.name }}</h3>
+      <h3>{{ tree.name }}</h3>
 
       <p v-if="tree.abstract" class="mt-3 text-sm italic text-gray-600">{{ tree.abstract }}</p>
     </div>
