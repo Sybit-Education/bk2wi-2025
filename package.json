@@ -23,7 +23,7 @@
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.3",
-    "flowbite": "^3.1.2",
+    "flowbite": "^4.0.1",
     "flowbite-vue": "^0.2.2",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
