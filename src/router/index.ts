@@ -39,6 +39,11 @@ const router = createRouter({
       component: () => import('../views/MapView.vue'),
     },
     {
+      path: '/createtree',
+      name: 'Create a tree',
+      component: () => import('../views/PlantATreeView.vue'),
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
