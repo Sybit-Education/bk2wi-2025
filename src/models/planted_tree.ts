@@ -1,7 +1,7 @@
 import type { UserInfo } from "./userInfo"
 import type { Location } from "./location"
 
-export interface PlanetedTree {
+export interface PlantedTree {
   id: string | number
   message?: string
   users: UserInfo[]

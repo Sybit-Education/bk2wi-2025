@@ -2,7 +2,12 @@
   <div class="mx-auto max-w-2xl p-4">
     <div>
       <label for="message" class="mb-1 block font-medium">Nachricht</label>
-      <input id="message" type="tel" class="w-full rounded border border-gray-300 px-3 py-2" />
+      <input
+        id="message"
+        v-model="message"
+        type="text"
+        class="w-full rounded border border-gray-300 px-3 py-2"
+      />
     </div>
 
     <div>
@@ -10,8 +15,10 @@
   <select
     id="location"
     name="location"
+    v-model="selectedLocation"
     class="cursor-pointer w-full rounded border border-gray-300 px-3 py-2"
   >
+    <option value="" disabled>-- Bitte wählen --</option>
     <option
       v-for="location in locations"
       :key="location.id ?? location.name"
@@ -28,8 +35,10 @@
   <select
     id="tree"
     name="tree"
+    v-model="selectedTree"
     class="cursor-pointer w-full rounded border border-gray-300 px-3 py-2"
   >
+    <option value="" disabled>-- Bitte wählen --</option>
     <option
       v-for="tree in trees"
       :key="tree.id ?? tree.name"
@@ -43,12 +52,19 @@
 
 <div>
       <label for="amount" class="mb-1 block font-medium">Anzahl der Bäume</label>
-      <input id="amount" type="tel" class="w-full rounded border border-gray-300 px-3 py-2" />
+      <input
+        id="amount"
+        v-model.number="amount"
+        type="number"
+        min="1"
+        class="w-full rounded border border-gray-300 px-3 py-2"
+      />
     </div>
 
 <div class="flex items-center gap-2 pt-2">
       <button
-        type="submit"
+        type="button"
+        @click="createTree"
         class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
       >
         Speichern
@@ -73,6 +89,9 @@ import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
 import type { TreeInfo } from '@/models/treeInfo'
 import { TreeInfoService } from '@/services/treeInfoService'
+import { TreePlantingService } from '@/services/treePlantingService'
+import type { PlantedTree } from '@/models/planted_tree'
+import { useAuthStore } from '@/stores/authStore'
 
 const treeInfoService = new TreeInfoService()
 const trees = ref<TreeInfo[]>([])
@@ -84,6 +103,17 @@ const loading = ref(true)
 
 const error = ref<string | null>(null)
 const totalLocations = ref(0)
+
+// Form state
+const message = ref('')
+const selectedLocation = ref<Location | null>(null)
+const selectedTree = ref<TreeInfo | null>(null)
+const amount = ref<number>(1)
+const submitting = ref(false)
+const success = ref<string | null>(null)
+
+const treePlantingService = new TreePlantingService()
+const auth = useAuthStore()
 
 // Paginierung
 const currentPage = ref(1)
@@ -139,5 +169,62 @@ onMounted(() => {
   loadLocation()
   loadTrees()
 })
+
+/**
+ * Pflanzt einen Baum (oder mehrere) beim Klick auf Speichern
+ */
+async function createTree() {
+  // Einfache Validierung
+  error.value = null
+  success.value = null
+
+  if (!selectedLocation.value) {
+    error.value = 'Bitte eine Location wählen.'
+    return
+  }
+
+  if (!selectedTree.value) {
+    error.value = 'Bitte eine Baumart wählen.'
+    return
+  }
+
+  if (!amount.value || amount.value < 1) {
+    error.value = 'Bitte eine gültige Anzahl (>= 1) eingeben.'
+    return
+  }
+
+  submitting.value = true
+
+  try {
+    // Baumeintrag für NocoDB zusammenstellen
+    const planted: Partial<PlantedTree> = {
+      message: message.value || undefined,
+      users: auth.user ? [auth.user] : [],
+      location: selectedLocation.value as Location,
+      amount: amount.value,
+      created_at: new Date(),
+    }
+
+    const created = await treePlantingService.createTree(planted as unknown as PlantedTree)
+
+    if (created) {
+      success.value = 'Baum erfolgreich gespeichert.'
+      // Formular zurücksetzen
+      message.value = ''
+      selectedLocation.value = null
+      selectedTree.value = null
+      amount.value = 1
+      // Option: neu laden der Liste
+      await loadTrees()
+    } else {
+      error.value = 'Beim Speichern ist ein Fehler aufgetreten.'
+    }
+  } catch (e) {
+    console.error('Fehler beim Erstellen des Baums:', e)
+    error.value = 'Beim Speichern ist ein Fehler aufgetreten.'
+  } finally {
+    submitting.value = false
+  }
+}
 
 </script>
