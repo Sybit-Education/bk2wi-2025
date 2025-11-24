@@ -8,9 +8,9 @@
       <br><br>
     </p>
 
+  <p>Die Themen lauten wie folgt:</p>
   <ul style="list-style-type:square;">
 
-    <p>Die Themen lauten wie folgt:</p>
       <li>Zusammenarbeit stärkt Zufriedenheit</li>
       <li>Gestaltung der Zukunft</li>
       <li>Verantwortung</li>
@@ -19,6 +19,7 @@
 <br>
 
 <p>Das gemeinsame Handeln bewegt einen großen Fortschritt in die Richtung unserer Gesellschaft und unserer Umwelt</p>
+
 
   </div>
 </template>
