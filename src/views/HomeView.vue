@@ -1,7 +1,22 @@
 <script setup lang="ts">
 import TreeInfoList from '../components/TreeInfoList.vue'
 </script>
+<style>
 
+          .button{
+          background: linear-gradient(145deg, #228B22, #96da17);
+          border: 3px solid #b3e662b2;
+          color: white;
+          font-size: 16px;
+          margin: 600px;
+          padding: 12px 27px;
+          border-radius: 30px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          }
+
+
+      </style>
 <template>
   <main>
     <div class="container mx-auto px-4 py-8">
@@ -13,20 +28,10 @@ import TreeInfoList from '../components/TreeInfoList.vue'
           wollen!
           Entdecken Sie die Vielfalt unserer regionalen Bäume und erfahren Sie mehr über ihre Arten.
         </p>
-        
-        <button style="
-          background: linear-gradient(145deg, #228B22, #ffe4c4);
-          border: 2px solid #4e5bcd;
-          color: white;
-          font-size: 16px;
-          padding: 12px 30px;
-          border-radius: 30px;
-          box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2), -2px -2px 6px rgba(255, 255, 255, 0.3);
-          cursor: pointer;
-          transition: all 0.3s ease;
-  ">
-    Hier klicken!
-  </button>
+
+        <a href="/more-info" class="button">
+          Zu weiteren Infos!
+        </a>
 
         <h1 class="text-4xl font-bold text-gray-800">Baumarten</h1>
 
@@ -38,5 +43,6 @@ import TreeInfoList from '../components/TreeInfoList.vue'
         >Zur Baumartenübersicht</RouterLink
       >
     </div>
+
   </main>
 </template>
