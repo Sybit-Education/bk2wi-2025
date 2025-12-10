@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import TreeDetails from '@/views/TreeDetails.vue'
 import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
@@ -17,6 +18,12 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/TreeOverviewView.vue'),
+    },
+    {
+      path: '/tree/:id',
+      name: 'tree-details',
+      component: TreeDetails,
+      props: true,
     },
     {
       path: '/about',

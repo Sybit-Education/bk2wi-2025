@@ -10,6 +10,33 @@
 /* add Flowbite Vue directory using @source directive */
 @source "../node_modules/flowbite-vue";
 
+@layer base {
+  body {
+    @apply bg-white text-gray-800;
+  }
+  h1 {
+    @apply text-4xl font-bold;
+  }
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+  h3 {
+    @apply text-2xl font-medium;
+  }
+  h4 {
+    @apply text-xl font-medium;
+  }
+  h5 {
+    @apply text-lg font-medium;
+  }
+  h6 {
+    @apply text-base font-medium;
+  }
+  p {
+    @apply text-base;
+  }
+}
+
 @layer components {
   a,
   .green {
