@@ -197,10 +197,9 @@ async function createTree() {
 
   try {
     // Baumeintrag für NocoDB zusammenstellen
+    // WICHTIG: Für Verknüpfungsfelder nur die ID-Felder übergeben
     const planted: Partial<PlantedTree> = {
       message: message.value || undefined,
-      users: auth.user ? [auth.user] : [],
-      location: selectedLocation.value as Location,
       amount: amount.value,
       created_at: new Date(),
     }
@@ -208,6 +207,24 @@ async function createTree() {
     const created = await treePlantingService.createTree(planted as unknown as PlantedTree)
 
     if (created) {
+      // Jetzt die Verknüpfungen herstellen, nachdem der Record erstellt wurde
+      const recordId = created.id
+
+      // Verknüpfe mit Benutzer
+      if (auth.user && auth.user.id) {
+        await treePlantingService.linkUser(recordId, auth.user.id)
+      }
+
+      // Verknüpfe mit Location
+      if (selectedLocation.value && selectedLocation.value.id) {
+        await treePlantingService.linkLocation(recordId, selectedLocation.value.id)
+      }
+
+      // Verknüpfe mit TreeInfo
+      if (selectedTree.value && selectedTree.value.id) {
+        await treePlantingService.linkTreeInfo(recordId, selectedTree.value.id)
+      }
+
       success.value = 'Baum erfolgreich gespeichert.'
       // Formular zurücksetzen
       message.value = ''
