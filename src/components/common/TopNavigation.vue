@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
+import ThemeToggle from '@/components/common/ThemeToggle.vue'
+import { FwbButton } from 'flowbite-vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -28,24 +30,28 @@ function handleLogout() {
           >
         </a>
         <div class="flex items-center ml-auto md:order-2">
+          <!-- Theme Toggle -->
+          <ThemeToggle class="mr-2" />
           <div class="hidden md:flex md:space-x-2 mr-4">
             <template v-if="!authStore.isAuthenticated">
-              <router-link 
-                to="/login" 
-                class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              <fwb-button
+                color="green"
+                href="/login"
+                class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center"
+                >Anmelden</fwb-button
               >
-                Anmelden
-              </router-link>
-              <router-link 
-                to="/signup" 
-                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              <fwb-button
+                color="alternative"
+                class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center"
+                href="/signup"
+                >Registrieren</fwb-button
               >
-                Registrieren
-              </router-link>
             </template>
             <template v-else>
-              <span class="text-gray-900 dark:text-white mr-2">Hallo, {{ authStore.username }}</span>
-              <button 
+              <span class="text-gray-900 dark:text-white mr-2"
+                >Hallo, {{ authStore.username }}</span
+              >
+              <button
                 @click="handleLogout"
                 class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
               >
@@ -149,8 +155,9 @@ function handleLogout() {
                 <button
                   @click="handleLogout"
                   class="block w-full text-center py-2 px-3 text-white bg-red-600 rounded-lg hover:bg-red-700"
-                  >Abmelden</button
                 >
+                  Abmelden
+                </button>
               </li>
             </template>
           </ul>
