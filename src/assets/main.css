@@ -216,3 +216,10 @@ p {
 html.dark p {
   color: rgb(209, 213, 219); /* gray-300 */
 }
+a {
+  color: var(--color-brand-primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}

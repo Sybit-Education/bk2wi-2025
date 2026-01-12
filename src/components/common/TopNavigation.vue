@@ -26,7 +26,7 @@ function handleLogout() {
         <a href="/" class="flex items-center space-x-3 mr-5">
           <img src="../../assets/ai-generated-tree.png" class="h-15" alt="Flowbite Logo" />
           <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-            >Mission Green</span
+            >Wurzelpartner</span
           >
         </a>
         <div class="flex items-center ml-auto md:order-2">
@@ -36,12 +36,14 @@ function handleLogout() {
             <template v-if="!authStore.isAuthenticated">
               <fwb-button
                 color="green"
+                size="md"
                 href="/login"
                 class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center"
                 >Anmelden</fwb-button
               >
               <fwb-button
                 color="alternative"
+                size="md"
                 class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center"
                 href="/signup"
                 >Registrieren</fwb-button
@@ -91,7 +93,7 @@ function handleLogout() {
           id="navbar-default"
         >
           <ul
-            class="font-medium flex flex-col md:p-0 mt-4 ml-8 md:flex-row md:space-x-18 rtl:space-x-reverse md:mt-1"
+            class="font-medium flex flex-col md:p-0 mt-4 ml-8 md:flex-row md:space-x-5 rtl:space-x-reverse md:mt-1"
           >
             <li>
               <a
