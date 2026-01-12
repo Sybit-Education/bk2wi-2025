@@ -273,6 +273,14 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.post<R[]>(url, capitalizedDataArray)
+
+      // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
+      if (Array.isArray(response)) {
+        return response.map((item) =>
+          lowercaseObjectKeys(item as Record<string, unknown>),
+        ) as R[]
+      }
+
       return response
     } catch (error) {
       console.error(`Fehler beim Erstellen von Datensätzen in ${tableName}:`, error)
@@ -300,6 +308,14 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.patch<R[]>(url, capitalizedDataArray)
+
+      // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
+      if (Array.isArray(response)) {
+        return response.map((item) =>
+          lowercaseObjectKeys(item as Record<string, unknown>),
+        ) as R[]
+      }
+
       return response
     } catch (error) {
       console.error(`Fehler beim Aktualisieren von Datensätzen in ${tableName}:`, error)
@@ -343,6 +359,14 @@ export class NocoDBService {
 
     try {
       const response = await this.apiClient.delete<R[]>(url, { data: dataArray })
+
+      // Konvertiere die Feldnamen in der Antwort zurück zu Kleinbuchstaben
+      if (Array.isArray(response)) {
+        return response.map((item) =>
+          lowercaseObjectKeys(item as Record<string, unknown>),
+        ) as R[]
+      }
+
       return response
     } catch (error) {
       console.error(`Fehler beim Löschen von Datensätzen aus ${tableName}:`, error)
