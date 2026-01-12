@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TreeInfoList from '../components/treeinfo/TreeInfoList.vue'
-import SponsorMarquee from '@/components/features/SponsorMarquee.vue'
+import SponsorMarquee from '@/components/sponsor/SponsorMarquee.vue'
 </script>
 
 <template>

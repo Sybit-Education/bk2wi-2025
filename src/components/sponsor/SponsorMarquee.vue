@@ -36,7 +36,8 @@ const fetchSponsors = async () => {
     const enriched = await Promise.all(
       items.map(async (sponsor) => {
         const logos = await sponsorService.getLogos(sponsor.id)
-        const displayLogo = logos[0] || (typeof sponsor.logo === 'string' ? sponsor.logo : undefined)
+        const displayLogo =
+          logos[0] || (typeof sponsor.logo === 'string' ? sponsor.logo : undefined)
         return { ...sponsor, displayLogo }
       }),
     )
@@ -55,7 +56,7 @@ onMounted(fetchSponsors)
 
 <template>
   <section class="overflow-hidden rounded-2xl">
-    <div class="px-6 py-6 md:px-10 md:py-8">
+    <div class="py-6 md:py-8">
       <div class="flex items-center justify-between gap-4">
         <div>
           <p class="text-sm uppercase tracking-[0.25em]">Unterstützt von</p>
@@ -78,38 +79,30 @@ onMounted(fetchSponsors)
             :style="hasMultiple ? { animationDuration } : {}"
             :class="['whitespace-nowrap', hasMultiple ? 'animate-marquee' : 'justify-start']"
           >
-            <div
+            <component
               v-for="sponsor in marqueeItems"
-              :key="`${sponsor.id}-${sponsor.name}-${sponsor.logo ?? 'no-logo'}`"
+              :is="sponsor.website ? 'a' : 'div'"
+              :href="sponsor.website || undefined"
+              :target="sponsor.website ? '_blank' : undefined"
+              rel="noopener noreferrer"
+              :key="`${sponsor.id}`"
               class="group flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur-sm transition hover:bg-white/15"
             >
               <div
-                class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 ring-1 ring-white/20"
+                class="flex items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20"
               >
                 <img
-                  v-if="sponsor.displayLogo"
+                  v-if="sponsor.logo"
                   :src="sponsor.displayLogo"
                   :alt="sponsor.name"
                   class="h-full w-full object-contain"
                   loading="lazy"
                 />
-                <span v-else class="text-lg font-semibold uppercase tracking-wide">
-                  {{ sponsor.name?.charAt(0) ?? '?' }}
+                <span v-else class="text-sm font-semibold tracking-wide">
+                  {{ sponsor.name }}
                 </span>
               </div>
-              <div class="flex flex-col">
-                <span class="text-sm font-semibold md:text-base">{{ sponsor.name }}</span>
-              </div>
-              <a
-                v-if="sponsor.website"
-                :href="sponsor.website"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="ml-2 hidden text-xs text-emerald-100 underline-offset-4 hover:text-white hover:underline md:block"
-              >
-                Website
-              </a>
-            </div>
+            </component>
           </div>
         </div>
       </div>
