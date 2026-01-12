@@ -35,7 +35,7 @@
   "devDependencies": {
     "@prettier/plugin-oxc": "^0.0.5",
     "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/postcss": "^4.1.16",
+    "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.14",
     "@tsconfig/node22": "^22.0.2",
     "@types/bcryptjs": "^3.0.0",
