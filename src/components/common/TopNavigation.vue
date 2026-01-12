@@ -38,9 +38,9 @@ function handleLogout() {
                 color="green"
                 size="md"
                 href="/login"
-                class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center"
-                >Anmelden</fwb-button
-              >
+                class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700"
+                ><span class="text-white">Anmelden</span>
+              </fwb-button>
               <fwb-button
                 color="alternative"
                 size="md"
@@ -98,7 +98,7 @@ function handleLogout() {
             <li>
               <a
                 href="#"
-                class="block py-2 px-3 text-white bg-green-700 rounded-sm md:bg-transparent md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500"
+                class="block py-2 px-3 text-white bg-brand-700 rounded-sm md:bg-transparent md:text-brand-700 md:p-0 dark:text-white md:dark:text-green-500"
                 aria-current="page"
                 >Home</a
               >
@@ -106,28 +106,28 @@ function handleLogout() {
             <li>
               <router-link
                 to="/trees"
-                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-brand-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 >Baumarten</router-link
               >
             </li>
             <li>
               <router-link
                 to="/map"
-                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-brand-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 >Karte</router-link
               >
             </li>
             <li>
               <router-link
                 to="/about"
-                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-brand-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 >Über uns</router-link
               >
             </li>
             <li>
               <router-link
                 to="/contact"
-                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-brand-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 >Kontakt</router-link
               >
             </li>
@@ -135,7 +135,7 @@ function handleLogout() {
               <li class="md:hidden mt-4">
                 <router-link
                   to="/login"
-                  class="block w-full text-center py-2 px-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                  class="block w-full text-center py-2 px-3 text-white bg-brand-600 rounded-lg hover:bg-brand-700"
                   >Anmelden</router-link
                 >
               </li>
