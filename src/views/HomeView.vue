@@ -13,9 +13,6 @@ import TreeInfoList from '../components/treeinfo/TreeInfoList.vue'
 
     <TreeInfoList />
     <div class="mt-4 flex flex-col w-fit">
-      <RouterLink to="/trees" class="text-green-700 hover:underline"
-        >Zur Baumartenübersicht</RouterLink
-      >
       <RouterLink to="/map" class="text-green-700 hover:underline">Zur Kartenansicht</RouterLink>
     </div>
   </div>
