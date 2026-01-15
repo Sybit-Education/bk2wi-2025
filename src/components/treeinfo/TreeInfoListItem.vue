@@ -22,7 +22,7 @@ const getLink = computed((): string => {
 
 <template>
   <fwb-card
-    class="tree-info-item w-sd hover:shadow-xl transition-shadow bg-white rounded-lg overflow-hidden p-0"
+    class="tree-info-item w-sd hover:shadow-xl transition-shadow rounded-lg overflow-hidden p-0"
     :img-src="imageUrl"
     :img-alt="tree.name"
     :variant="hasImage ? 'image' : 'default'"
@@ -31,7 +31,7 @@ const getLink = computed((): string => {
     <div class="p-5">
       <h3>{{ tree.name }}</h3>
 
-      <p v-if="tree.abstract" class="mt-3 text-sm italic text-gray-600">{{ tree.abstract }}</p>
+      <p v-if="tree.abstract" class="mt-3 text-sm italic">{{ tree.abstract }}</p>
     </div>
   </fwb-card>
 </template>
@@ -46,5 +46,8 @@ const getLink = computed((): string => {
   width: 100%;
   max-height: 50%;
   overflow: hidden;
+}
+a:hover {
+  text-decoration: none;
 }
 </style>

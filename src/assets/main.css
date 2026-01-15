@@ -1,0 +1,225 @@
+@import 'tailwindcss';
+
+/* Flowbite Plugin */
+@plugin "flowbite/plugin";
+
+/* Source-Verzeichnisse für Flowbite */
+@source "../node_modules/flowbite";
+@source "../node_modules/flowbite-vue";
+
+/* Flowbite Vue Styles */
+@import 'flowbite-vue/index.css';
+
+/* Dark Mode Variante aktivieren */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Theme-Variablen für flexible Anpassung */
+@theme {
+  /* Colors */
+  --color-brand-50: rgb(15, 41, 30);
+  --color-brand-100: rgb(17, 49, 35);
+  --color-brand-200: rgb(19, 57, 41);
+  --color-brand-300: rgb(22, 68, 48);
+  --color-brand-400: rgb(27, 84, 58);
+  --color-brand-500: rgb(35, 110, 74);
+  --color-brand-600: rgb(48, 164, 108);
+  --color-brand-700: rgb(60, 177, 121);
+  --color-brand-800: rgb(76, 195, 138);
+  --color-brand-900: rgb(229, 251, 235);
+  --color-neutral-0: rgb(12, 10, 9);
+  --color-neutral-50: rgb(28, 25, 23);
+  --color-neutral-100: rgb(41, 37, 36);
+  --color-neutral-200: rgb(68, 64, 60);
+  --color-neutral-300: rgb(87, 83, 78);
+  --color-neutral-400: rgb(120, 113, 108);
+  --color-neutral-500: rgb(168, 162, 158);
+  --color-neutral-600: rgb(214, 211, 209);
+  --color-neutral-700: rgb(231, 229, 228);
+  --color-neutral-800: rgb(245, 245, 244);
+  --color-neutral-900: rgb(250, 250, 249);
+  --color-neutral-950: rgb(255, 255, 255);
+  --color-error-50: rgb(58, 24, 47);
+  --color-error-100: rgb(69, 26, 55);
+  --color-error-200: rgb(80, 27, 63);
+  --color-error-300: rgb(96, 29, 72);
+  --color-error-400: rgb(122, 29, 90);
+  --color-error-500: rgb(167, 24, 115);
+  --color-error-600: rgb(214, 64, 159);
+  --color-error-700: rgb(227, 75, 169);
+  --color-error-800: rgb(246, 92, 182);
+  --color-error-900: rgb(254, 235, 247);
+  --color-warning-50: rgb(44, 33, 0);
+  --color-warning-100: rgb(53, 40, 0);
+  --color-warning-200: rgb(62, 48, 0);
+  --color-warning-300: rgb(73, 60, 0);
+  --color-warning-400: rgb(89, 74, 5);
+  --color-warning-500: rgb(112, 94, 0);
+  --color-warning-600: rgb(245, 217, 10);
+  --color-warning-700: rgb(255, 239, 92);
+  --color-warning-800: rgb(240, 192, 0);
+  --color-warning-900: rgb(255, 250, 209);
+  --color-success-50: rgb(15, 41, 30);
+  --color-success-100: rgb(17, 49, 35);
+  --color-success-200: rgb(19, 57, 41);
+  --color-success-300: rgb(22, 68, 48);
+  --color-success-400: rgb(27, 84, 58);
+  --color-success-500: rgb(35, 110, 74);
+  --color-success-600: rgb(48, 164, 108);
+  --color-success-700: rgb(60, 177, 121);
+  --color-success-800: rgb(76, 195, 138);
+  --color-success-900: rgb(229, 251, 235);
+  --color-brand-primary: rgb(48, 164, 108);
+  --color-default-font: rgb(250, 250, 249);
+  --color-subtext-color: rgb(168, 162, 158);
+  --color-neutral-border: rgb(68, 64, 60);
+  --color-black: rgb(12, 10, 9);
+  --color-default-background: rgb(12, 10, 9);
+
+  /* Fonts */
+  --text-caption: 12px;
+  --text-caption--font-weight: 400;
+  --text-caption--letter-spacing: 0em;
+  --text-caption--line-height: 16px;
+  --text-caption-bold: 12px;
+  --text-caption-bold--font-weight: 500;
+  --text-caption-bold--letter-spacing: 0em;
+  --text-caption-bold--line-height: 16px;
+  --text-body: 14px;
+  --text-body--font-weight: 400;
+  --text-body--letter-spacing: 0em;
+  --text-body--line-height: 20px;
+  --text-body-bold: 14px;
+  --text-body-bold--font-weight: 500;
+  --text-body-bold--letter-spacing: 0em;
+  --text-body-bold--line-height: 20px;
+  --text-heading-3: 16px;
+  --text-heading-3--font-weight: 600;
+  --text-heading-3--letter-spacing: 0em;
+  --text-heading-3--line-height: 20px;
+  --text-heading-2: 20px;
+  --text-heading-2--font-weight: 600;
+  --text-heading-2--letter-spacing: 0em;
+  --text-heading-2--line-height: 24px;
+  --text-heading-1: 30px;
+  --text-heading-1--font-weight: 600;
+  --text-heading-1--letter-spacing: 0em;
+  --text-heading-1--line-height: 36px;
+  --text-monospace-body: 14px;
+  --text-monospace-body--font-weight: 400;
+  --text-monospace-body--letter-spacing: 0em;
+  --text-monospace-body--line-height: 20px;
+
+  /* Font families */
+  --font-caption: Assistant;
+  --font-caption-bold: Assistant;
+  --font-body: Assistant;
+  --font-body-bold: Assistant;
+  --font-heading-3: Assistant;
+  --font-heading-2: Assistant;
+  --font-heading-1: Assistant;
+  --font-monospace-body: 'Source Sans 3';
+
+  /* Box shadows */
+  --shadow-sm: 2px 2px 2px 0px rgba(0, 0, 0, 0.05);
+  --shadow-default: 2px 2px 2px 0px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0px 4px 16px -2px rgba(0, 0, 0, 0.08), 4px 4px 4px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0px 12px 32px -4px rgba(0, 0, 0, 0.08), 4px 6px 8px -2px rgba(0, 0, 0, 0.08);
+  --shadow-overlay: 0px 12px 32px -4px rgba(0, 0, 0, 0.08), 4px 6px 8px -2px rgba(0, 0, 0, 0.08);
+
+  /* Border radiuses */
+  --radius-sm: 7px;
+  --radius-md: 5px;
+  --radius-DEFAULT: 5px;
+  --radius-lg: 10px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --spacing-112: 28rem;
+  --spacing-144: 36rem;
+  --spacing-192: 48rem;
+  --spacing-256: 64rem;
+  --spacing-320: 80rem;
+}
+
+/* Base Styles */
+body {
+  background-color: white;
+  color: rgb(31, 41, 55); /* gray-800 */
+}
+
+.dark body,
+html.dark body {
+  background-color: rgb(17, 24, 39); /* gray-900 */
+  color: rgb(243, 244, 246); /* gray-100 */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: rgb(17, 24, 39); /* gray-900 */
+}
+
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: white;
+}
+
+h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+h5 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+p {
+  font-size: 1rem;
+  color: rgb(55, 65, 81); /* gray-700 */
+}
+
+.dark p,
+html.dark p {
+  color: rgb(209, 213, 219); /* gray-300 */
+}
+a {
+  color: var(--color-brand-primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
