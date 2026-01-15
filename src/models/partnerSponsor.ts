@@ -9,4 +9,6 @@ export interface PartnerSponsor {
   type: PartnerSponsorType
   logo?: string | null
   website?: string | null
+  /** Normalisierte Logo-URL (bevorzugt card_cover) */
+  displayUrl?: string | null
 }

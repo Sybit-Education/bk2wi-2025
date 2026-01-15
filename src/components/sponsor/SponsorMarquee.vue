@@ -3,11 +3,9 @@ import { computed, onMounted, ref } from 'vue'
 import type { PartnerSponsor } from '@/models/partnerSponsor'
 import { PartnerSponsorService } from '@/services/partnerSponsorService'
 
-type SponsorWithLogo = PartnerSponsor & { displayLogo?: string }
-
 const sponsorService = new PartnerSponsorService()
 
-const sponsors = ref<SponsorWithLogo[]>([])
+const sponsors = ref<PartnerSponsor[]>([])
 const isLoading = ref(false)
 const hasError = ref(false)
 
@@ -30,19 +28,7 @@ const fetchSponsors = async () => {
   try {
     isLoading.value = true
     const response = await sponsorService.getSponsors()
-    const items = response.list ?? []
-
-    // Ziehe das Logo über die Hilfsmethode, falls nötig
-    const enriched = await Promise.all(
-      items.map(async (sponsor) => {
-        const logos = await sponsorService.getLogos(sponsor.id)
-        const displayLogo =
-          logos[0] || (typeof sponsor.logo === 'string' ? sponsor.logo : undefined)
-        return { ...sponsor, displayLogo }
-      }),
-    )
-
-    sponsors.value = enriched
+    sponsors.value = response.list ?? []
   } catch (error) {
     console.error('Fehler beim Laden der Sponsoren:', error)
     hasError.value = true
@@ -86,16 +72,14 @@ onMounted(fetchSponsors)
               :target="sponsor.website ? '_blank' : undefined"
               rel="noopener noreferrer"
               :key="`${sponsor.id}`"
-              class="group flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur-sm transition hover:bg-white/15"
+              class="group flex items-center gap-3 rounded-xl bg-black/10 dark:bg-white/10 px-4 py-3 backdrop-blur-sm transition hover:scale-105 hover:bg-black/20 dark:hover:bg-white/20"
             >
-              <div
-                class="flex items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20"
-              >
+              <div class="flex items-center justify-center w-40 h-10">
                 <img
-                  v-if="sponsor.logo"
-                  :src="sponsor.displayLogo"
+                  v-if="sponsor.displayUrl"
+                  :src="sponsor.displayUrl"
                   :alt="sponsor.name"
-                  class="h-full w-full object-contain"
+                  class="object-contain max-h-10 max-w-full"
                   loading="lazy"
                 />
                 <span v-else class="text-sm font-semibold tracking-wide">
