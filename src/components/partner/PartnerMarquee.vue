@@ -1,38 +1,39 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import type { PartnerSponsor } from '@/models/partnerSponsor'
 import { PartnerSponsorService } from '@/services/partnerSponsorService'
 
-const sponsorService = new PartnerSponsorService()
+const partnerService = new PartnerSponsorService()
 
-const sponsors = ref<PartnerSponsor[]>([])
+const partners = ref<PartnerSponsor[]>([])
 const isLoading = ref(false)
 const hasError = ref(false)
 
-const hasMultiple = computed(() => sponsors.value.length > 1)
+const hasMultiple = computed(() => partners.value.length > 1)
 const marqueeCopies = computed(() => (hasMultiple.value ? [0, 1] : [0]))
 
 const animationDuration = computed(() => {
   if (!hasMultiple.value) return '0s'
   const base = 18
-  const factor = sponsors.value.length * 2
+  const factor = partners.value.length * 2
   return `${Math.max(base, factor * 3)}s`
 })
 
-const fetchSponsors = async () => {
+const fetchPartners = async () => {
   try {
     isLoading.value = true
-    const response = await sponsorService.getSponsors()
-    sponsors.value = response.list ?? []
+    const response = await partnerService.getPartners()
+    partners.value = response.list ?? []
   } catch (error) {
-    console.error('Fehler beim Laden der Sponsoren:', error)
+    console.error('Fehler beim Laden der Partner:', error)
     hasError.value = true
   } finally {
     isLoading.value = false
   }
 }
 
-onMounted(fetchSponsors)
+onMounted(fetchPartners)
 </script>
 
 <template>
@@ -42,12 +43,10 @@ onMounted(fetchSponsors)
       <div class="mt-6 min-h-[100px]">
         <div v-if="isLoading" class="flex items-center gap-2">
           <span class="h-2.5 w-2.5 animate-ping rounded-full"></span>
-          <span>Lade Sponsoren …</span>
+          <span>Lade Partner …</span>
         </div>
-        <div v-else-if="hasError" class="text-sm">Sponsoren konnten nicht geladen werden.</div>
-        <div v-else-if="sponsors.length === 0" class="text-sm">
-          Aktuell keine Sponsoren vorhanden.
-        </div>
+        <div v-else-if="hasError" class="text-sm">Partner konnten nicht geladen werden.</div>
+        <div v-else-if="partners.length === 0" class="text-sm">Aktuell keine Partner vorhanden.</div>
         <div v-else class="relative overflow-hidden">
           <div
             class="marquee-track flex items-center gap-6 md:gap-10"
@@ -55,29 +54,26 @@ onMounted(fetchSponsors)
             :class="['whitespace-nowrap', hasMultiple ? 'animate-marquee' : 'justify-start']"
           >
             <template v-for="copy in marqueeCopies" :key="copy">
-              <component
-                v-for="sponsor in sponsors"
-                :is="sponsor.website ? 'a' : 'div'"
-                :href="sponsor.website || undefined"
-                :target="sponsor.website ? '_blank' : undefined"
-                rel="noopener noreferrer"
-                :key="`${sponsor.id}-${copy}`"
+              <RouterLink
+                v-for="partner in partners"
+                :key="`${partner.id}-${copy}`"
+                :to="{ name: 'partner-details', params: { id: partner.id } }"
                 :aria-hidden="copy > 0 ? 'true' : undefined"
-                class="group flex items-center gap-3 rounded-xl bg-black/10 dark:bg-white/10 px-4 py-3 backdrop-blur-sm transition hover:scale-105 hover:bg-black/20 dark:hover:bg-white/20"
+                class="group flex items-center gap-3 rounded-xl bg-black/10 px-4 py-3 backdrop-blur-sm transition hover:scale-105 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
               >
-                <div class="flex items-center justify-center w-40 h-10">
+                <div class="flex h-10 w-40 items-center justify-center">
                   <img
-                    v-if="sponsor.displayUrl"
-                    :src="sponsor.displayUrl"
-                    :alt="sponsor.name"
-                    class="object-contain max-h-10 max-w-full"
+                    v-if="partner.displayUrl"
+                    :src="partner.displayUrl"
+                    :alt="partner.name"
+                    class="max-h-10 max-w-full object-contain"
                     loading="lazy"
                   />
                   <span v-else class="text-sm font-semibold tracking-wide">
-                    {{ sponsor.name }}
+                    {{ partner.name }}
                   </span>
                 </div>
-              </component>
+              </RouterLink>
             </template>
           </div>
         </div>

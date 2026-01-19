@@ -78,6 +78,24 @@ export class PartnerSponsorService {
   }
 
   /**
+   * Liefert einen Partner anhand seiner ID
+   */
+  async getPartnerById(id: string | number): Promise<PartnerSponsor | null> {
+    try {
+      const record = await this.nocoDBService.getRecord<PartnerSponsor>(this.tableName, id)
+      if (!record) return null
+
+      return {
+        ...record,
+        displayUrl: this.extractFirstLogo(record.logo) ?? null,
+      }
+    } catch (error) {
+      console.error(`Fehler beim Abrufen des Partners ${id}:`, error)
+      return null
+    }
+  }
+
+  /**
    * Liefert alle Sponsoren
    */
   async getSponsors(limit?: number, offset?: number): Promise<ListResponse<PartnerSponsor>> {
