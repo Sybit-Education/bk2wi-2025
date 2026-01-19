@@ -24,7 +24,7 @@ function handleLogout() {
     <div class="container mx-auto">
       <div class="max-w-screen-xl flex flex-wrap items-center justify-between p-4">
         <a href="/" class="flex items-center space-x-3 mr-5">
-          <img src="../../assets/wurzelpartner_logo-small.svg" class="h-15" alt="Flowbite Logo" />
+          <img src="/img/WurzelPartner-Logo.svg" class="h-15" alt="Flowbite Logo" />
           <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
             >Wurzelpartner</span
           >
