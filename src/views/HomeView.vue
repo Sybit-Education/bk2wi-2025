@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import TreeInfoList from '../components/treeinfo/TreeInfoList.vue'
+import SponsorMarquee from '@/components/sponsor/SponsorMarquee.vue'
+import PartnerMarquee from '@/components/partner/PartnerMarquee.vue'
 </script>
 
 <template>
@@ -15,4 +17,28 @@ import TreeInfoList from '../components/treeinfo/TreeInfoList.vue'
 
     <TreeInfoList />
   </div>
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <p class="text-sm uppercase tracking-[0.25em]">Gemeinsam mit</p>
+      <h2 class="text-2xl font-semibold md:text-3xl">Unsere Partner</h2>
+    </div>
+  </div>
+
+  <PartnerMarquee />
+
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <p class="text-sm uppercase tracking-[0.25em]">Unterstützt von</p>
+      <h2 class="text-2xl font-semibold md:text-3xl">Unsere Sponsoren</h2>
+    </div>
+  </div>
+  <SponsorMarquee />
 </template>
+
+<style scoped>
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+</style>

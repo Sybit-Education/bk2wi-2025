@@ -8,6 +8,36 @@ export class PartnerSponsorService {
   readonly nocoDBService: NocoDBService
   private readonly tableName = 'PARTNER_SPONSOR'
 
+  private extractFirstLogo(value: unknown): string | undefined {
+    if (!value) return undefined
+    if (Array.isArray(value)) return this.extractFirstLogo(value[0])
+    if (typeof value === 'string') return value
+
+    if (typeof value === 'object') {
+      const obj = value as Record<string, unknown>
+
+      const thumbnails = obj.thumbnails as Record<string, unknown> | undefined
+      const cardCoverThumb = thumbnails?.card_cover as Record<string, unknown> | undefined
+      if (cardCoverThumb) {
+        if (typeof cardCoverThumb.signedUrl === 'string') return cardCoverThumb.signedUrl
+        if (typeof cardCoverThumb.url === 'string') return cardCoverThumb.url
+      }
+
+      const cardCover = obj.card_cover as Record<string, unknown> | string | undefined
+      if (typeof cardCover === 'string') return cardCover
+      if (cardCover && typeof cardCover === 'object') {
+        if (typeof cardCover.signedUrl === 'string') return cardCover.signedUrl
+        if (typeof cardCover.url === 'string') return cardCover.url
+      }
+
+      if (typeof obj.signedUrl === 'string') return obj.signedUrl
+      if (typeof obj.url === 'string') return obj.url
+      if (typeof obj.path === 'string') return obj.path
+    }
+
+    return undefined
+  }
+
   constructor(nocoDBService?: NocoDBService) {
     this.nocoDBService = nocoDBService || new NocoDBService()
     this.nocoDBService.registerTable(this.tableName, 'm0syxl6tq6ufvgi')
@@ -26,11 +56,18 @@ export class PartnerSponsorService {
   ): Promise<ListResponse<PartnerSponsor>> {
     const whereClause = `(type,eq,${type})`
 
-    return this.nocoDBService.getRecords<PartnerSponsor>(this.tableName, {
+    const response = await this.nocoDBService.getRecords<PartnerSponsor>(this.tableName, {
       where: whereClause,
       limit,
       offset,
     })
+
+    response.list = (response.list ?? []).map((item) => ({
+      ...item,
+      displayUrl: this.extractFirstLogo(item.logo) ?? null,
+    }))
+
+    return response
   }
 
   /**
@@ -41,6 +78,24 @@ export class PartnerSponsorService {
   }
 
   /**
+   * Liefert einen Partner anhand seiner ID
+   */
+  async getPartnerById(id: string | number): Promise<PartnerSponsor | null> {
+    try {
+      const record = await this.nocoDBService.getRecord<PartnerSponsor>(this.tableName, id)
+      if (!record) return null
+
+      return {
+        ...record,
+        displayUrl: this.extractFirstLogo(record.logo) ?? null,
+      }
+    } catch (error) {
+      console.error(`Fehler beim Abrufen des Partners ${id}:`, error)
+      return null
+    }
+  }
+
+  /**
    * Liefert alle Sponsoren
    */
   async getSponsors(limit?: number, offset?: number): Promise<ListResponse<PartnerSponsor>> {
@@ -48,37 +103,24 @@ export class PartnerSponsorService {
   }
 
   /**
-   * Hilfsmethode, um Logos eines Sponsors/Partners abzurufen.
-   * Nutzt das Logo-Feld direkt und normalisiert den Rückgabewert zu einer String-Liste.
-   * @param id ID des Sponsors/Partners
-   * @returns Liste der Logo-URLs
+   * Hilfsmethode, die aus einem Datensatz (oder via ID) das erste Logo extrahiert.
+   * Bevorzugt die card_cover-Thumbnail-Variante.
    */
-  async getLogos(id: string | number): Promise<string[]> {
+  async getLogo(recordOrId: PartnerSponsor | string | number): Promise<string | undefined> {
     try {
-      const record = await this.nocoDBService.getRecord<PartnerSponsor>(this.tableName, id, 'logo')
-      const raw = (record as PartnerSponsor | undefined)?.logo
-
-      if (!raw) return []
-      if (Array.isArray(raw)) {
-        return raw
-          .map((item) => {
-            if (typeof item === 'string') return item
-            if (item && typeof item === 'object' && 'url' in item && typeof item.url === 'string')
-              return item.url
-            return null
-          })
-          .filter((url): url is string => Boolean(url))
+      if (typeof recordOrId === 'object') {
+        return this.extractFirstLogo((recordOrId as PartnerSponsor).logo)
       }
 
-      if (typeof raw === 'string') return [raw]
-      if (raw && typeof raw === 'object' && 'url' in raw && typeof (raw as { url?: string }).url === 'string') {
-        return [(raw as { url: string }).url]
-      }
-
-      return []
+      const record = await this.nocoDBService.getRecord<PartnerSponsor>(
+        this.tableName,
+        recordOrId,
+        'logo',
+      )
+      return this.extractFirstLogo((record as PartnerSponsor | undefined)?.logo)
     } catch (error) {
-      console.error(`Fehler beim Abrufen der Logos für Sponsor/Partner ${id}:`, error)
-      return []
+      console.error(`Fehler beim Abrufen der Logos für Sponsor/Partner ${recordOrId}:`, error)
+      return undefined
     }
   }
 }

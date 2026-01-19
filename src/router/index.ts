@@ -44,6 +44,12 @@ const router = createRouter({
       component: () => import('../views/PlantATreeView.vue'),
     },
     {
+      path: '/partner/:id',
+      name: 'partner-details',
+      component: () => import('../views/PartnerDetailView.vue'),
+      props: true,
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
