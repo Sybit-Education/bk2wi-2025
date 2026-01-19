@@ -10,12 +10,7 @@ const isLoading = ref(false)
 const hasError = ref(false)
 
 const hasMultiple = computed(() => sponsors.value.length > 1)
-
-const marqueeItems = computed(() => {
-  if (sponsors.value.length === 0) return []
-  if (!hasMultiple.value) return sponsors.value
-  return [...sponsors.value, ...sponsors.value]
-})
+const marqueeCopies = computed(() => (hasMultiple.value ? [0, 1] : [0]))
 
 const animationDuration = computed(() => {
   if (!hasMultiple.value) return '0s'
@@ -59,34 +54,37 @@ onMounted(fetchSponsors)
         <div v-else-if="sponsors.length === 0" class="text-sm">
           Aktuell keine Sponsoren vorhanden.
         </div>
-        <div v-else class="relative">
+        <div v-else class="relative overflow-hidden">
           <div
-            class="flex items-center gap-6 md:gap-10"
+            class="marquee-track flex items-center gap-6 md:gap-10"
             :style="hasMultiple ? { animationDuration } : {}"
             :class="['whitespace-nowrap', hasMultiple ? 'animate-marquee' : 'justify-start']"
           >
-            <component
-              v-for="sponsor in marqueeItems"
-              :is="sponsor.website ? 'a' : 'div'"
-              :href="sponsor.website || undefined"
-              :target="sponsor.website ? '_blank' : undefined"
-              rel="noopener noreferrer"
-              :key="`${sponsor.id}`"
-              class="group flex items-center gap-3 rounded-xl bg-black/10 dark:bg-white/10 px-4 py-3 backdrop-blur-sm transition hover:scale-105 hover:bg-black/20 dark:hover:bg-white/20"
-            >
-              <div class="flex items-center justify-center w-40 h-10">
-                <img
-                  v-if="sponsor.displayUrl"
-                  :src="sponsor.displayUrl"
-                  :alt="sponsor.name"
-                  class="object-contain max-h-10 max-w-full"
-                  loading="lazy"
-                />
-                <span v-else class="text-sm font-semibold tracking-wide">
-                  {{ sponsor.name }}
-                </span>
-              </div>
-            </component>
+            <template v-for="copy in marqueeCopies" :key="copy">
+              <component
+                v-for="sponsor in sponsors"
+                :is="sponsor.website ? 'a' : 'div'"
+                :href="sponsor.website || undefined"
+                :target="sponsor.website ? '_blank' : undefined"
+                rel="noopener noreferrer"
+                :key="`${sponsor.id}-${copy}`"
+                :aria-hidden="copy > 0 ? 'true' : undefined"
+                class="group flex items-center gap-3 rounded-xl bg-black/10 dark:bg-white/10 px-4 py-3 backdrop-blur-sm transition hover:scale-105 hover:bg-black/20 dark:hover:bg-white/20"
+              >
+                <div class="flex items-center justify-center w-40 h-10">
+                  <img
+                    v-if="sponsor.displayUrl"
+                    :src="sponsor.displayUrl"
+                    :alt="sponsor.name"
+                    class="object-contain max-h-10 max-w-full"
+                    loading="lazy"
+                  />
+                  <span v-else class="text-sm font-semibold tracking-wide">
+                    {{ sponsor.name }}
+                  </span>
+                </div>
+              </component>
+            </template>
           </div>
         </div>
       </div>
@@ -108,5 +106,9 @@ onMounted(fetchSponsors)
   animation-name: marquee;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+}
+
+.marquee-track {
+  min-width: max-content;
 }
 </style>
