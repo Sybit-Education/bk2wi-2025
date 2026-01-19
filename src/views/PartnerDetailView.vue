@@ -62,6 +62,10 @@ onMounted(fetchPartner)
             <h1 class="text-3xl font-semibold md:text-4xl">{{ partner.name }}</h1>
           </div>
 
+          <p v-if="partner.description" class="text-base leading-relaxed text-slate-700 dark:text-slate-200">
+            {{ partner.description }}
+          </p>
+
           <div class="flex flex-wrap gap-3">
             <a
               v-if="partner.website"

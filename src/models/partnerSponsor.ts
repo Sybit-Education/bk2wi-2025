@@ -5,10 +5,11 @@ export type PartnerSponsorType = 'Partner' | 'Sponsor'
  */
 export interface PartnerSponsor {
   id: string | number
-  name: string
-  type: PartnerSponsorType
-  logo?: string | null
-  website?: string | null
+ name: string
+ type: PartnerSponsorType
+ logo?: string | null
+ website?: string | null
+  description?: string | null
   /** Normalisierte Logo-URL (bevorzugt card_cover) */
   displayUrl?: string | null
 }

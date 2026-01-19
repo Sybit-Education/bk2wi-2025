@@ -24,18 +24,15 @@ import PartnerMarquee from '@/components/partner/PartnerMarquee.vue'
     </div>
   </div>
 
-  <div class="full-bleed px-4 sm:px-6 md:px-8">
-    <PartnerMarquee />
-  </div>
+  <PartnerMarquee />
+
   <div class="flex items-center justify-between gap-4">
     <div>
       <p class="text-sm uppercase tracking-[0.25em]">Unterstützt von</p>
       <h2 class="text-2xl font-semibold md:text-3xl">Unsere Sponsoren</h2>
     </div>
   </div>
-  <div class="full-bleed mx-4 sm:mx-6 md:px-8">
-    <SponsorMarquee />
-  </div>
+  <SponsorMarquee />
 </template>
 
 <style scoped>
