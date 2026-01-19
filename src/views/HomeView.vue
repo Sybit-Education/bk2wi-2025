@@ -15,7 +15,5 @@ import SponsorMarquee from '@/components/sponsor/SponsorMarquee.vue'
     </div>
 
     <TreeInfoList />
-
-    <SponsorMarquee />
   </div>
 </template>

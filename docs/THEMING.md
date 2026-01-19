@@ -64,7 +64,7 @@ setMode('system') // System-Präferenz folgen
 
 ## Farben anpassen
 
-Die Farbpaletten sind in `src/assets/main.scss` als CSS-Variablen definiert:
+Die Farbpaletten sind in `src/assets/main.css` als CSS-Variablen definiert:
 
 ```css
 @theme {
