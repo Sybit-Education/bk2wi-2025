@@ -4,8 +4,8 @@ import type { UserInfo } from './userInfo'
 export interface Location {
   id?: string | number
   name: string
-  geoLocation: string
+  geoLocation?: string
   info: string
-  offeredByUser: UserInfo
+  offeredByUser?: UserInfo
   latLang?: LatLng
 }

@@ -1,5 +1,6 @@
 import { NocoDBService } from './nocodbService'
 import type { UserInfo } from '@/models/userInfo'
+import { useAuthStore } from '@/stores/authStore'
 import { hashPassword, verifyPassword } from '@/utils/passwordUtils'
 
 /**
@@ -8,6 +9,7 @@ import { hashPassword, verifyPassword } from '@/utils/passwordUtils'
 export class UserInfoService {
   readonly nocoDBService: NocoDBService
   private readonly tableName = 'user'
+  private currentUser!: UserInfo | null
 
   constructor(nocoDBService?: NocoDBService) {
     this.nocoDBService = nocoDBService || new NocoDBService()
@@ -29,7 +31,7 @@ export class UserInfoService {
     })
 
     const user = response.list[0]
-    
+
     // Wenn kein Benutzer gefunden wurde oder das Passwort nicht gesetzt ist
     if (!user || !user.password) {
       return null
@@ -37,8 +39,13 @@ export class UserInfoService {
 
     // Überprüfe das Passwort mit bcrypt
     const passwordValid = await verifyPassword(password, user.password)
-    
-    return passwordValid ? user : null
+
+    if(passwordValid) {
+      this.currentUser = user
+      return user
+    } else {
+      return null
+    }
   }
 
   /**
@@ -138,7 +145,7 @@ export class UserInfoService {
 
       // Neues Passwort setzen
       user.password = await hashPassword(newPassword)
-      
+
       // Benutzer aktualisieren
       const updatedUser = await this.updateUser(user)
       return !!updatedUser

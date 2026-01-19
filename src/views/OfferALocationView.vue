@@ -47,6 +47,7 @@ import { ref, onMounted } from 'vue'
 import { LocationService } from '@/services/locationService'
 import type { Location } from '@/models/location'
 import { useAuthStore } from '@/stores/authStore'
+import type { LatLng } from 'leaflet'
 
 
 const locationService = new LocationService()
@@ -77,22 +78,26 @@ async function createLocation() {
       throw new Error('User not authenticated')
     }
 
-    const newLocation: Location = {
-      id: 0,
+    const result = await locationService.createLocation({
       name: address.value,
       info: info.value,
-      geoLocation: address.value,
-      offeredByUser: auth.user,
-    }
+      geoLocation: "47.73980909820898;8.970851784462777", // Placeholder values
+    })
 
-    await locationService.createLocation(newLocation)
+    await locationService.linkUserToLocation(result!.id!, auth.user.id!)
+
     success.value = 'Standort erfolgreich angeboten!'
     address.value = ''
     info.value = ''
-  } catch (e: any) {
-    error.value = e.message || 'Fehler beim Anbieten des Standorts.'
+
+    console.log('Created location:', result)
+
+  } catch (e: Error | unknown) {
+    const errorMessage = e instanceof Error ? e.message : 'Fehler beim Anbieten des Standorts.'
+    error.value = errorMessage
     console.error(e)
   } finally {
     submitting.value = false
   }
 }
+</script>
