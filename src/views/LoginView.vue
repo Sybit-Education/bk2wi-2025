@@ -33,7 +33,7 @@ onMounted(() => {
 const handleLogin = async (event: Event) => {
   try {
     event.preventDefault()
-    
+
     // Rate Limiting prüfen
     const key = email.value.toLowerCase()
     if (!RateLimiter.isAllowed(key)) {
@@ -42,7 +42,7 @@ const handleLogin = async (event: Event) => {
       errorMessage.value = `Zu viele Anmeldeversuche. Bitte versuchen Sie es in ${rateLimitTimeRemaining.value} Minuten erneut.`
       return
     }
-    
+
     loading.value = true
     errorMessage.value = ''
     loginAttempts.value++
@@ -52,11 +52,11 @@ const handleLogin = async (event: Event) => {
     if (success) {
       // Erfolgreiche Anmeldung - Rate Limiter zurücksetzen
       RateLimiter.reset(key)
-      
+
       if (rememberMe.value) {
         localStorage.setItem('rememberMe', 'true')
       }
-      
+
       // Zu geschützter Route weiterleiten, falls vorhanden
       const redirect = route.query.redirect as string
       router.push(redirect || { name: 'home' })
@@ -64,7 +64,7 @@ const handleLogin = async (event: Event) => {
       // Ungültige Anmeldeinformationen
       errorMessage.value =
         authStore.error || 'Ungültige Anmeldedaten, bitte versuchen Sie es erneut!'
-        
+
       // Bei zu vielen fehlgeschlagenen Versuchen Rate Limit anzeigen
       if (loginAttempts.value >= 3) {
         const timeRemaining = RateLimiter.getTimeRemaining(key)
@@ -72,7 +72,7 @@ const handleLogin = async (event: Event) => {
           isRateLimited.value = true
           rateLimitTimeRemaining.value = Math.ceil(timeRemaining / 1000 / 60)
           errorMessage.value = `Zu viele Anmeldeversuche. Bitte versuchen Sie es in ${rateLimitTimeRemaining.value} Minuten erneut.`
-          
+
           // Timer für Countdown starten
           if (rateLimitTimer) clearInterval(rateLimitTimer)
           rateLimitTimer = setInterval(() => {
@@ -159,7 +159,7 @@ const handleLogin = async (event: Event) => {
         <button
           type="submit"
           :disabled="isRateLimited || loading"
-          class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          class="w-full text-white bg-brand-600 hover:bg-brand-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           <span v-if="loading">Wird angemeldet...</span>
           <span v-else-if="isRateLimited">Gesperrt ({{ rateLimitTimeRemaining }} min)</span>

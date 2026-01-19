@@ -7,9 +7,9 @@
   "theme_color": "#4DBA87",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/img/WurzelPartner-Logo.svg",
       "sizes": "32x32",
-      "type": "image/x-icon"
+      "type": "image/svg+xml"
     }
   ]
 }
