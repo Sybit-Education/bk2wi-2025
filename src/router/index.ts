@@ -12,6 +12,11 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/spenden',
+      name: 'spenden',
+      component: () => import('../views/Spenden_View.vue'),
+    },
+    {
       path: '/trees',
       name: 'trees',
       // route level code-splitting
