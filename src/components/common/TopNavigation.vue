@@ -48,6 +48,11 @@ function goToDashboard() {
   router.push({ name: 'dashboard' })
 }
 
+function goToProfile() {
+  isProfileMenuOpen.value = false
+  router.push({ name: 'profile' })
+}
+
 function handleLogout() {
   authStore.logout()
   router.push('/login')
@@ -118,9 +123,15 @@ onBeforeUnmount(() => {
                   </div>
                   <button
                     @click="goToDashboard"
+                  class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+                >
+                  Dashboard
+                </button>
+                  <button
+                    @click="goToProfile"
                     class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
                   >
-                    Dashboard
+                    Profil
                   </button>
                   <button
                     @click="handleLogout"
@@ -222,6 +233,14 @@ onBeforeUnmount(() => {
                   class="block w-full text-center py-2 px-3 text-white bg-brand-600 rounded-lg hover:bg-brand-700"
                 >
                   Zum Dashboard
+                </router-link>
+              </li>
+              <li class="md:hidden mt-2">
+                <router-link
+                  to="/profile"
+                  class="block w-full text-center py-2 px-3 text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100"
+                >
+                  Profil verwalten
                 </router-link>
               </li>
               <li class="md:hidden mt-2">
