@@ -43,30 +43,21 @@
 </style>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { LocationService } from '@/services/locationService'
-import type { Location } from '@/models/location'
 import { useAuthStore } from '@/stores/authStore'
-import type { LatLng } from 'leaflet'
 
 
 const locationService = new LocationService()
-const loading = ref(true)
 
 const error = ref<string | null>(null)
 
 // Form state
-const message = ref('')
 const submitting = ref(false)
 const success = ref<string | null>(null)
 const address = ref('')
 const info = ref('')
 const auth = useAuthStore()
-
-// Paginierung
-const currentPage = ref(1)
-const pageSize = ref(25)
-const totalPages = ref(1)
 
 async function createLocation() {
   submitting.value = true

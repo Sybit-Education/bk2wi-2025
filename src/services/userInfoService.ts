@@ -1,6 +1,5 @@
 import { NocoDBService } from './nocodbService'
 import type { UserInfo } from '@/models/userInfo'
-import { useAuthStore } from '@/stores/authStore'
 import { hashPassword, verifyPassword } from '@/utils/passwordUtils'
 
 /**
@@ -40,7 +39,7 @@ export class UserInfoService {
     // Überprüfe das Passwort mit bcrypt
     const passwordValid = await verifyPassword(password, user.password)
 
-    if(passwordValid) {
+    if (passwordValid) {
       this.currentUser = user
       return user
     } else {
@@ -57,8 +56,7 @@ export class UserInfoService {
     try {
       const user = await this.nocoDBService.getRecord<UserInfo>(this.tableName, id)
       return user as UserInfo
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Fehler beim Abrufen des Benutzers:', error)
       return null
     }
@@ -128,7 +126,7 @@ export class UserInfoService {
   async changePassword(
     userId: string | number,
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<boolean> {
     try {
       // Benutzer abrufen
