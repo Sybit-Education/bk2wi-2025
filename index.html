@@ -1,13 +1,25 @@
-<!DOCTYPE html>
-<html lang="">
+<!doctype html>
+<html lang="de">
   <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="/manifest.webmanifest">
-    <title>Vite App</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/img/WurzelPartner-Logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Wurzelpartner</title>
+    <!-- Theme-Initialisierung: verhindert Flash of Unstyled Content (FOUC) -->
+    <script>
+      if (
+        localStorage.getItem('theme-mode') === 'dark' ||
+        (!('theme-mode' in localStorage) &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    </script>
   </head>
-  <body>
+  <body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

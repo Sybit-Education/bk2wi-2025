@@ -4,8 +4,9 @@ import type { Picture } from './picture'
  * Interface für die Daten in der TREE_INFO Tabelle
  */
 export interface TreeInfo {
-  id?: string | number
+  id: string | number
   name: string
+  abstract?: string
   description?: string
   picture: Picture[]
 }
