@@ -14,6 +14,12 @@ const profileMenuRef = ref<HTMLElement | null>(null)
 const userInitial = computed(() =>
   authStore.username ? authStore.username.charAt(0).toUpperCase() : '?',
 )
+const userEmail = computed(() => authStore.user?.email ?? '')
+const avatarUrl = computed(() =>
+  userEmail.value
+    ? `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(userEmail.value)}&backgroundColor=b6e3f4,c0aede,d1d4f9&fontSize=42`
+    : '',
+)
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
@@ -90,9 +96,15 @@ onBeforeUnmount(() => {
               <div class="relative" @mouseenter="openProfileMenu" ref="profileMenuRef">
                 <button
                   @click="toggleProfileMenu"
-                  class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-sm font-semibold text-white shadow-md hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+                  class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-600 text-sm font-semibold text-white shadow-md hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
                 >
-                  {{ userInitial }}
+                  <img
+                    v-if="avatarUrl"
+                    :src="avatarUrl"
+                    :alt="`Avatar für ${authStore.username}`"
+                    class="h-full w-full object-cover"
+                  />
+                  <span v-else>{{ userInitial }}</span>
                 </button>
                 <div
                   v-if="isProfileMenuOpen"
