@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
@@ -8,15 +8,52 @@ import { FwbButton } from 'flowbite-vue'
 const authStore = useAuthStore()
 const router = useRouter()
 const isMenuOpen = ref(false)
+const isProfileMenuOpen = ref(false)
+const profileMenuRef = ref<HTMLElement | null>(null)
+
+const userInitial = computed(() =>
+  authStore.username ? authStore.username.charAt(0).toUpperCase() : '?',
+)
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
+}
+
+function toggleProfileMenu() {
+  isProfileMenuOpen.value = !isProfileMenuOpen.value
+}
+
+function openProfileMenu() {
+  isProfileMenuOpen.value = true
+}
+
+function closeProfileMenu() {
+  isProfileMenuOpen.value = false
+}
+
+function handleClickOutside(event: MouseEvent) {
+  if (profileMenuRef.value && !profileMenuRef.value.contains(event.target as Node)) {
+    closeProfileMenu()
+  }
+}
+
+function goToDashboard() {
+  isProfileMenuOpen.value = false
+  router.push({ name: 'dashboard' })
 }
 
 function handleLogout() {
   authStore.logout()
   router.push('/login')
 }
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
@@ -32,7 +69,7 @@ function handleLogout() {
         <div class="flex items-center ml-auto md:order-2">
           <!-- Theme Toggle -->
           <ThemeToggle class="mr-2" />
-          <div class="hidden md:flex md:space-x-2 mr-4">
+          <div class="hidden md:flex md:items-center md:space-x-3 mr-4">
             <template v-if="!authStore.isAuthenticated">
               <fwb-button
                 color="green"
@@ -50,15 +87,37 @@ function handleLogout() {
               >
             </template>
             <template v-else>
-              <span class="text-gray-900 dark:text-white mr-2"
-                >Hallo, {{ authStore.username }}</span
-              >
-              <button
-                @click="handleLogout"
-                class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-              >
-                Abmelden
-              </button>
+              <div class="relative" @mouseenter="openProfileMenu" ref="profileMenuRef">
+                <button
+                  @click="toggleProfileMenu"
+                  class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-sm font-semibold text-white shadow-md hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+                >
+                  {{ userInitial }}
+                </button>
+                <div
+                  v-if="isProfileMenuOpen"
+                  class="absolute right-0 z-20 mt-2 w-48 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
+                >
+                  <div class="border-b border-gray-200 px-4 py-3 dark:border-gray-700">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Angemeldet als</p>
+                    <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                      {{ authStore.username }}
+                    </p>
+                  </div>
+                  <button
+                    @click="goToDashboard"
+                    class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    @click="handleLogout"
+                    class="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-900/40"
+                  >
+                    Abmelden
+                  </button>
+                </div>
+              </div>
             </template>
           </div>
           <button
@@ -95,14 +154,6 @@ function handleLogout() {
           <ul
             class="font-medium flex flex-col md:p-0 mt-4 ml-8 md:flex-row md:space-x-5 rtl:space-x-reverse md:mt-1"
           >
-            <li>
-              <a
-                href="#"
-                class="block py-2 px-3 text-white bg-brand-700 rounded-sm md:bg-transparent md:text-brand-700 md:p-0 dark:text-white md:dark:text-green-500"
-                aria-current="page"
-                >Home</a
-              >
-            </li>
             <li>
               <router-link
                 to="/trees"
@@ -152,6 +203,14 @@ function handleLogout() {
                 <span class="block w-full text-center py-2 px-3 text-gray-900 dark:text-white">
                   Hallo, {{ authStore.username }}
                 </span>
+              </li>
+              <li class="md:hidden mt-2">
+                <router-link
+                  to="/dashboard"
+                  class="block w-full text-center py-2 px-3 text-white bg-brand-600 rounded-lg hover:bg-brand-700"
+                >
+                  Zum Dashboard
+                </router-link>
               </li>
               <li class="md:hidden mt-2">
                 <button
