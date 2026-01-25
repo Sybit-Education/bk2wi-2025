@@ -30,7 +30,7 @@
     "leaflet.path.drag": "^0.0.6",
     "pinia": "^3.0.3",
     "vue": "^3.5.26",
-    "vue-router": "^4.6.3"
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@prettier/plugin-oxc": "^0.0.5",
