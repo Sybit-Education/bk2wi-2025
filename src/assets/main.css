@@ -153,6 +153,10 @@ html.dark body {
   color: rgb(243, 244, 246); /* gray-100 */
 }
 
+p {
+  margin-bottom: 0.75rem;
+}
+
 h1,
 h2,
 h3,
