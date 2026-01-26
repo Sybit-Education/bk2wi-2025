@@ -10,6 +10,10 @@
       />
     </div>
 
+    <div class="my-4">
+      <LocationSelector v-model="geoLocation" />
+    </div>
+
     <div>
       <label for="info" class="mb-1 block font-medium">Weitere Angaben bzw. Wünsche</label>
       <textarea
@@ -46,6 +50,7 @@
 import { ref } from 'vue'
 import { LocationService } from '@/services/locationService'
 import { useAuthStore } from '@/stores/authStore'
+import LocationSelector from '@/components/map/LocationSelector.vue'
 
 
 const locationService = new LocationService()
@@ -56,6 +61,7 @@ const error = ref<string | null>(null)
 const submitting = ref(false)
 const success = ref<string | null>(null)
 const address = ref('')
+const geoLocation = ref(null as { lat: number; lng: number } | null)
 const info = ref('')
 const auth = useAuthStore()
 
@@ -72,7 +78,7 @@ async function createLocation() {
     const result = await locationService.createLocation({
       name: address.value,
       info: info.value,
-      geoLocation: "47.73980909820898;8.970851784462777", // Placeholder values
+      geoLocation: geoLocation.value?.lat + ';' + geoLocation.value?.lng,
     })
 
     await locationService.linkUserToLocation(result!.id!, auth.user.id!)
