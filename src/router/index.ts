@@ -65,6 +65,14 @@ const router = createRouter({
         //hideLayout: true
       },
     },
+    {
+      path: '/offerlocation',
+      name: 'Offer a location',
+      component: () => import('../views/OfferALocationView.vue'),
+      meta: {
+        //hideLayout: true
+      },
+    },
   ],
 })
 

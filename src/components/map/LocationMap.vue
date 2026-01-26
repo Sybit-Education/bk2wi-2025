@@ -150,6 +150,7 @@ const loadLocations = async () => {
   try {
     const response = await locationService.getAllLocations(100, 0)
     locations.value = response.list
+    console.log('Geladene Standorte:', locations.value)
   } catch (error) {
     console.error('Fehler beim Laden der Standorte:', error)
   } finally {

@@ -53,6 +53,15 @@ export class LocationService {
     return createdLocation
   }
 
+  async linkUserToLocation(locationId: string | number, userId: string | number) : Promise<boolean> {
+    return await this.nocoDBService.linkRecords(
+      this.tableName,
+      'cboya3ex4ygzvh9', // user link field ID
+      locationId,
+      [{ id: userId }]
+    )
+  }
+
   /**
    * Aktualisiert einen bestehenden Standort
    */
