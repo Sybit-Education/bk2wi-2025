@@ -29,22 +29,22 @@ function handleLogout() {
             >Wurzelpartner</span
           >
         </a>
-        <div class="flex items-center ml-auto md:order-2">
+        <div class="flex items-center ml-auto md:order-2 md:self-end">
           <!-- Theme Toggle -->
           <ThemeToggle class="mr-2" />
-          <div class="hidden md:flex md:space-x-2 mr-4">
+          <div class="hidden md:flex md:space-x-2 md:translate-x-62">
             <template v-if="!authStore.isAuthenticated">
               <fwb-button
                 color="green"
                 size="md"
                 href="/login"
-                class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700"
+                class="px-5 py-2.5 h-10 inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700"
                 ><span class="text-white">Anmelden</span>
               </fwb-button>
               <fwb-button
                 color="alternative"
                 size="md"
-                class="px-5 py-2.5 m-2 h-10 inline-flex items-center justify-center"
+                class="px-5 py-2.5 h-10 inline-flex items-center justify-center"
                 href="/signup"
                 >Registrieren</fwb-button
               >
