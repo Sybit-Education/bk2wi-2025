@@ -31,7 +31,7 @@ function handleLogout() {
         </a>
         <div class="flex items-center ml-auto md:order-2 md:self-end">
           <!-- Theme Toggle -->
-          <ThemeToggle class="mr-2" />
+          <ThemeToggle class="mr-2 md:translate-x-62" />
           <div class="hidden md:flex md:space-x-2 md:translate-x-62">
             <template v-if="!authStore.isAuthenticated">
               <fwb-button
