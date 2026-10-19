@@ -28,6 +28,10 @@ onMounted(() => {
   if (redirect) {
     errorMessage.value = 'Bitte melden Sie sich an, um auf diese Seite zuzugreifen.'
   }
+
+  if (authStore.isAuthenticated) {
+    router.replace(redirect || { name: 'dashboard' })
+  }
 })
 
 const handleLogin = async (event: Event) => {
@@ -59,7 +63,7 @@ const handleLogin = async (event: Event) => {
 
       // Zu geschützter Route weiterleiten, falls vorhanden
       const redirect = route.query.redirect as string
-      router.push(redirect || { name: 'home' })
+      router.push(redirect || { name: 'dashboard' })
     } else {
       // Ungültige Anmeldeinformationen
       errorMessage.value =

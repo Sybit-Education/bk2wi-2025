@@ -91,18 +91,21 @@ export class UserInfoService {
         throw new Error('ID ist erforderlich für die Aktualisierung')
       }
 
+      // Für Passwort-Änderungen nur minimale Felder senden
+      const sanitizedPayload = this.pickAllowedFields(userInfo, ['id', 'password'] as const)
+
       // Wenn ein neues Passwort gesetzt wird, verschlüsseln wir es
-      if (userInfo.password) {
+      if (typeof sanitizedPayload.password === 'string') {
         // Prüfen, ob das Passwort bereits verschlüsselt ist
         // Bcrypt-Hashes beginnen immer mit $2a$, $2b$ oder $2y$
-        if (!userInfo.password.startsWith('$2')) {
-          userInfo.password = await hashPassword(userInfo.password)
+        if (!sanitizedPayload.password.startsWith('$2')) {
+          sanitizedPayload.password = await hashPassword(sanitizedPayload.password)
         }
       }
 
       const [updatedUser] = await this.nocoDBService.updateRecords<UserInfo, UserInfo>(
         this.tableName,
-        userInfo,
+        sanitizedPayload as UserInfo,
       )
       return updatedUser || null
     } catch (error) {
@@ -146,5 +149,52 @@ export class UserInfoService {
       console.error('Fehler beim Ändern des Passworts:', error)
       return false
     }
+  }
+
+  /**
+   * Aktualisiert nur Profilfelder ohne Passwort (Username, Email, Bild)
+   */
+  async updateUserProfile(
+    userInfo: Pick<UserInfo, 'id'> & Partial<Omit<UserInfo, 'password'>>,
+  ): Promise<UserInfo | null> {
+    if (!userInfo.id) {
+      throw new Error('ID ist erforderlich für die Profilaktualisierung')
+    }
+
+    // Nur erlaubte Profilfelder (keine Passwörter, keine Attachments solange nicht explizit unterstützt)
+    const sanitized = this.pickAllowedFields(userInfo, [
+      'id',
+      'username',
+      'email',
+      'treesPlanted',
+      'moneyDonated',
+      'signUpDate',
+      'logedInLast',
+    ] as const)
+
+    const [updatedUser] = await this.nocoDBService.updateRecords<UserInfo, UserInfo>(
+      this.tableName,
+      sanitized as UserInfo,
+    )
+    return updatedUser || null
+  }
+
+  private removeUndefined<T extends Record<string, unknown>>(data: T): T {
+    const entries = Object.entries(data).filter(([, value]) => value !== undefined)
+    return Object.fromEntries(entries) as T
+  }
+
+  private pickAllowedFields<T, K extends keyof T>(
+    data: T,
+    keys: readonly K[],
+  ): Partial<Pick<T, K>> {
+    const result: Partial<Pick<T, K>> = {}
+    keys.forEach((key) => {
+      const value = data[key]
+      if (value !== undefined) {
+        result[key] = value
+      }
+    })
+    return result
   }
 }
