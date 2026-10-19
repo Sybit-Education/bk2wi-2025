@@ -44,7 +44,7 @@ const getLink = computed((): string => {
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
   width: 100%;
-  max-height: 50%;
+  height: 300px;
   overflow: hidden;
 }
 a:hover {
