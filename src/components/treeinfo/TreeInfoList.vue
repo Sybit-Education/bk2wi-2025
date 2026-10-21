@@ -1,52 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import type { TreeInfo } from '@/models/treeInfo'
-import { TreeInfoService } from '@/services/treeInfoService'
+import { useTreeList } from '@/composables/useTreeList'
 import TreeInfoListItem from './TreeInfoListItem.vue'
 
-const treeInfoService = new TreeInfoService()
-const trees = ref<TreeInfo[]>([])
-const loading = ref(true)
-const error = ref<string | null>(null)
-const totalTrees = ref(0)
-
-// Paginierung
-const currentPage = ref(1)
-const pageSize = ref(25)
-const totalPages = ref(1)
-
-async function loadTrees() {
-  loading.value = true
-  error.value = null
-
-  try {
-    // Berechne Offset für Paginierung
-    const offset = (currentPage.value - 1) * pageSize.value
-
-    // Lade Bäume mit Paginierung über den TreeInfoService
-    const response = await treeInfoService.getAllTrees(pageSize.value, offset)
-    trees.value = response.list
-    totalTrees.value = response.pageInfo.totalRows
-    totalPages.value = Math.ceil(totalTrees.value / pageSize.value)
-  } catch (err) {
-    console.error('Fehler beim Laden der Bäume:', err)
-    error.value =
-      'Die Baumdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
-  } finally {
-    loading.value = false
-  }
-}
-
-function goToPage(page: number) {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page
-    loadTrees()
-  }
-}
-
-onMounted(() => {
-  loadTrees()
-})
+const { trees, loading, error, currentPage, totalPages, goToPage } = useTreeList()
 </script>
 
 <template>

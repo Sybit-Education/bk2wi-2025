@@ -1,93 +1,102 @@
-# bk2wi-2025
+# Wurzelpartner
 
-This template should help get you started developing with Vue 3 in Vite.
+Eine Vue-Anwendung rund um Baumarten, Pflanzungen und regionale Partner.
+Wir verwenden Vue 3 mit Composition API, TypeScript und Vite.
 
-## Sicherheitsfeatures
+## Lokal starten
 
-### Passwort-Verschlüsselung
-
-Das Projekt verwendet bcrypt für die sichere Verschlüsselung von Passwörtern. Um ein Passwort-Hash für Testzwecke zu generieren, kann folgender Befehl verwendet werden:
-
-```sh
-npm run generate-password -- MeinPasswort123
-```
-
-Dies erzeugt einen Hash, der mit dem in der Anwendung verwendeten Algorithmus kompatibel ist.
-
-### Passwort-Anforderungen
-
-Passwörter müssen folgende Kriterien erfüllen:
-- Mindestens 8 Zeichen lang
-- Mindestens ein Großbuchstabe
-- Mindestens ein Kleinbuchstabe
-- Mindestens eine Zahl
-- Mindestens ein Sonderzeichen (@$!%*?&)
-
-### Sicherheitsmaßnahmen
-
-Die Anwendung implementiert folgende Sicherheitsmaßnahmen:
-- CSRF-Schutz durch Token-Validierung
-- Rate Limiting für Login-Versuche (max. 5 Versuche in 15 Minuten)
-- Sichere Speicherung von Benutzerinformationen
-- JWT-basierte Authentifizierung
-
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup for development
-
-### Install node dependencies
+Voraussetzungen: Node.js 22 (Projektvorgabe in [.nvmrc](.nvmrc)), npm und VS Code
+mit der Erweiterung **Vue (Official)**.
+Alle Befehle werden im Projektordner `wurzelpartner` ausgeführt.
 
 ```sh
-npm install
-```
-
-### Configure your enviroment
-
-Copy the `.env.local.example` to `.env.local` and fill it with your NocoDB URL and API key
-
-### Compile and Hot-Reload for Development
-
-```sh
+npm ci
+cp .env.local.example .env.local
 npm run dev
 ```
 
-## For production
+Die Lehrkraft stellt die Werte für `VITE_NOCODB_API_URL` und `VITE_NOCODB_API_KEY` bereit.
+Diese gehören in `.env.local` im Projektordner, nicht in `src`.
+Nach einer Änderung der Konfiguration muss der Entwicklungsserver neu gestartet werden.
+Die Browser-Adresse steht im Terminal, normalerweise `http://localhost:5173`.
+Ohne erreichbares Backend kann die Oberfläche starten, aber keine Baumdaten laden.
 
-### Type-Check, Compile and Minify for Production
+**Wichtig:** Werte mit dem Präfix `VITE_` sind im Browser sichtbar. Keine administrativen
+API-Schlüssel oder echten Geheimnisse verwenden und lokale Konfiguration nicht committen.
+Der vorhandene Login ist kein geprüfter Sicherheitsbaustein für den Produktionseinsatz.
 
-```sh
-npm run build
+## Hier anfangen
+
+Für die ersten Aufgaben reicht dieser Weg durch die Anwendung:
+
+1. [src/views/TreeOverviewView.vue](src/views/TreeOverviewView.vue): Überschrift und Aufbau einer Seite.
+2. [src/components/treeinfo/TreeInfoList.vue](src/components/treeinfo/TreeInfoList.vue): Liste,
+   Ladeanzeige, Fehler und Seitennavigation.
+3. [src/components/treeinfo/TreeInfoListItem.vue](src/components/treeinfo/TreeInfoListItem.vue):
+   Darstellung eines einzelnen Baums. Die Daten kommen über die Prop `tree`.
+4. [src/composables/useTreeList.ts](src/composables/useTreeList.ts): Daten laden und Seiten wechseln.
+5. [src/models/treeInfo.ts](src/models/treeInfo.ts): Welche Eigenschaften hat ein Baum?
+
+Eine Vue-Datei besteht aus `<script setup lang="ts">` für die Logik, `<template>` für
+die Darstellung und bei Bedarf `<style scoped>` für lokale CSS-Regeln.
+Vorhandene CSS-Klassen verwenden überwiegend Tailwind; die Karten stammen aus Flowbite Vue.
+
+## Datenfluss verstehen
+
+```text
+TreeOverviewView / HomeView
+  -> TreeInfoList             zeigt den aktuellen Zustand an
+    -> useTreeList           lädt Daten und verwaltet die Seite
+      -> TreeInfoService    kennt die fachlichen Datenzugriffe
+        -> NocoDBService   übersetzt die NocoDB-Anfragen und Feldnamen
+          -> ApiClient   sendet die HTTP-Anfrage
+    -> TreeInfoListItem      zeigt einen Baum über die Prop "tree" an
 ```
 
-## Helpful commands
+`useTreeList()` ist eine normale Funktion, die Vue-Zustand und passende Aktionen bündelt.
+Jede Listeninstanz erhält ihren eigenen Zustand. Zum Anzeigen eines weiteren Baumfelds
+muss man die technischen Services nicht verändern.
 
-### Lint with [ESLint](https://eslint.org/)
+- `ref(...)`: ein veränderlicher Wert. Im Script benutzt man `.value`, im Template nicht.
+- `computed(...)`: ein berechneter Wert, zum Beispiel die Seitenzahl. Nicht zusätzlich speichern.
+- `onMounted(...)`: startet das erste Laden, sobald die Komponente eingebunden ist.
+- `v-for`: wiederholt eine Darstellung für die Einträge einer Liste.
+- `v-if` / `v-else-if`: zeigen je nach Zustand unterschiedliche Inhalte.
+- `:tree="tree"`: gibt Daten als Prop an die Kindkomponente weiter.
+- `@click="goToPage(...)"`: ruft beim Klicken eine Aktion auf.
+
+## Erste Übung
+
+1. Ändere die Überschrift in [src/views/TreeOverviewView.vue](src/views/TreeOverviewView.vue)
+   und öffne `/trees` im Browser.
+2. Ergänze in [src/components/treeinfo/TreeInfoListItem.vue](src/components/treeinfo/TreeInfoListItem.vue)
+   unter dem Baumnamen `<p>Baum-ID: {{ tree.id }}</p>`.
+3. Erkläre, warum dafür keine Änderung am Datenzugriff nötig ist.
+4. Führe `npm test` und `npm run type-check` aus.
+
+## Wo ändere ich was?
+
+| Aufgabe                            | Ort                                                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------------------------- |
+| Neue Seite verknüpfen              | [src/router/index.ts](src/router/index.ts)                                                   |
+| Inhalt einer Seite ändern          | [src/views](src/views)                                                                       |
+| Eine Baumkarte gestalten           | [src/components/treeinfo/TreeInfoListItem.vue](src/components/treeinfo/TreeInfoListItem.vue) |
+| Anzahl der Bäume pro Seite ändern  | `PAGE_SIZE` in [src/composables/useTreeList.ts](src/composables/useTreeList.ts)              |
+| Baumarten-Tabelle konfigurieren    | [src/config/nocodb.ts](src/config/nocodb.ts), mit der Lehrkraft                              |
+| Globale Farben und Theme verstehen | [docs/THEMING.md](docs/THEMING.md)                                                           |
+
+## Änderungen prüfen
 
 ```sh
-npm run lint
+npm test               # Tests einmal ausführen, ohne echtes Backend
+npm run test:watch     # Tests bei Änderungen erneut ausführen
+npm run type-check     # TypeScript und Vue-Templates prüfen, einschließlich Tests
+npm run build          # Typprüfung und Produktionsbuild
 ```
 
-### Generate Password Hash for Testing
+Die [Tests der Baumliste](src/components/treeinfo/__tests__/TreeInfoList.spec.ts) zeigen Beispiele
+für Laden, leere Ergebnisse, Fehler und Blättern. Nur der Datenabruf wird ersetzt;
+die Listenkomponente und ihre Baumkarten werden tatsächlich gerendert.
+`npm run lint` und `npm run format` verändern Dateien automatisch und sollten bewusst benutzt werden.
 
-```sh
-npm run generate-password -- YourPassword
-```
+Die [Codeanalyse](docs/CODEANALYSE.md) hält die Entscheidungen dieses Refactorings und offene Themen fest.

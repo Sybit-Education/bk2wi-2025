@@ -1,6 +1,7 @@
 import { NocoDBService, type ListResponse } from './nocodbService'
 import type { TreeInfo } from '@/models/treeInfo'
 import type { Picture } from '@/models/picture'
+import { nocodbTables } from '@/config/nocodb'
 
 /**
  * Service für den Zugriff auf die TREE_INFO Tabelle
@@ -11,7 +12,7 @@ export class TreeInfoService {
 
   constructor(nocoDBService?: NocoDBService) {
     this.nocoDBService = nocoDBService || new NocoDBService()
-    this.nocoDBService.registerTable(this.tableName, 'msiujkp7wh01rvt')
+    this.nocoDBService.registerTable(this.tableName, nocodbTables.treeInfo)
   }
 
   /**
